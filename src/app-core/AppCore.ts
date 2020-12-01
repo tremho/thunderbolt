@@ -68,6 +68,8 @@ class AppCore {
         // set up our app display
         this.model.addSection('testValues', {mainLabel: 'Hello, World! This is ThunderBolt!'})
 
+        console.log('<<<setupUIElements<<<')
+
         return Promise.resolve(); // this is called as a promise
     }
     flatten(obj) {

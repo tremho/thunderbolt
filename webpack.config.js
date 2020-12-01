@@ -51,14 +51,14 @@ function cleanFolder(folderPath) {
 const srcPath = path.resolve(__dirname, 'src')
 const buildPath = path.resolve(__dirname, 'build')
 const distPath = path.resolve(__dirname, 'dist')
-copyFolderRecursiveSync(path.join(srcPath, 'components'), buildPath)
+copyFolderRecursiveSync(path.join(srcPath, 'components'), path.join(buildPath, 'src'))
 // copy the app.riot file
-fs.copyFileSync(path.join(srcPath, 'app.riot'), path.join(buildPath, 'app.riot'))
-fs.copyFileSync(path.join(srcPath, 'scratch-app.riot'), path.join(buildPath, 'scratch-app.riot'))
+fs.copyFileSync(path.join(srcPath, 'app.riot'), path.join(buildPath, 'src', 'app.riot'))
+fs.copyFileSync(path.join(srcPath, 'scratch-app.riot'), path.join(buildPath, 'src', 'scratch-app.riot'))
 console.log('copy complete')
 
 module.exports = {
-  entry: './build/appMain.js',
+  entry: './build/src/appMain.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/dist/',

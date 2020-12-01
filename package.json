@@ -11,7 +11,9 @@
     "clean": "rm -fr build css; cd electronMain; npm run clean",
     "build": "tsc; sass src/scss:css; webpack -c --mode production",
     "prepublishOnly": "npm test",
-    "start": "tsc && sass src/scss:css && webpack -c --mode development && cd electronMain && npm run start",
+    "clean run desktop": "npm clean; npm run \"run desktop\"",
+    "run desktop": "tsc && sass src/scss:css && webpack -c --mode development && cd electronMain && npm run start",
+    "run android": "tsc && sass src/scss:css && webpack -c --mode development && cd NativeScript/ThunderBolt-NS && tns run android --device=medium",
     "compgen": "node tools/compgen interactive"
   },
   "keywords": [],

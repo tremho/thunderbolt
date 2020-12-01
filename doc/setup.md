@@ -36,7 +36,20 @@ update the properties of the layout
 Let's do "Hello World" using a simple label control.
 
 Let's do this in the Electron/Riot (Desktop) world first.
- - √ Okay.
+ - √ Okay. `6e53372efeaa5fd2b2640977741805ef88649e63`
+ 
+Now do the same thing, without connection to desktop yet, in {N}
+
+ - √ Cooliomente
+ 
+ Now let's create an app activity module that will be called
+ at app page start in either case and set the label there.
+ 
+  - √ Desktop version ready. Needed to rearrange due to some clean build problems.
+  - checking it at 
+  
+ 
+ 
  
   
 

@@ -5,6 +5,8 @@ import App from './app.riot'
 import AppCore from './app-core/AppCore'
 import registerGlobalComponents from './register-global-components'
 
+import * as MainPage from '../activitySource/mainPage'
+
 console.log('Running under Riot', riot.version)
 console.log(__dirname)
 
@@ -24,7 +26,10 @@ console.log('starting app...')
 coreApp.requestMessages()
 coreApp.setProjectRoot('/Users/sohmert/tbd/thunderbolt')
 coreApp.setupUIElements().then(() => {
+  console.log('now mounting and running Riot app')
   app = mountApp( document.getElementById('root'), { app: coreApp } )
+  console.log('about to start MainPage')
+  MainPage.appStart(coreApp)
 })
 
 
