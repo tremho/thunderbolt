@@ -54,19 +54,6 @@ class AppCore {
         })
     }
 
-    private showInfo() {
-        this.model.setAtPath('uiElements.page', 'info')
-    }
-    private showMilestones() {
-        this.model.setAtPath('uiElements.page', 'milestones')
-    }
-    private showObjectives() {
-        this.model.setAtPath('uiElements.page', 'objectives')
-    }
-    private showSpecifications() {
-        this.model.setAtPath('uiElements.page', 'specifications')
-    }
-
     public setupUIElements() {
         console.log('>>> setupUIElements >>>')
         // set the infomessage log handling
@@ -77,6 +64,9 @@ class AppCore {
         imrSingleton.subscribe(msgArray => {
             this.model.setAtPath('infoMessage.messages', msgArray)
         })
+
+        // set up our app display
+        this.model.addSection('testValues', {mainLabel: 'Hello, World! This is ThunderBolt!'})
 
         return Promise.resolve(); // this is called as a promise
     }

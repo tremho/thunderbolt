@@ -22,7 +22,7 @@ const coreApp = new AppCore()
 let app;
 console.log('starting app...')
 coreApp.requestMessages()
-coreApp.setProjectRoot('/Users/sohmert/tbd/projectus')
+coreApp.setProjectRoot('/Users/sohmert/tbd/thunderbolt')
 coreApp.setupUIElements().then(() => {
   app = mountApp( document.getElementById('root'), { app: coreApp } )
 })
