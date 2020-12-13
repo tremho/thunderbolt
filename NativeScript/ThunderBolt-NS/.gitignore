@@ -2,6 +2,7 @@
 hooks/
 node_modules/
 platforms/
+ref/
 
 # NativeScript Template
 *.js.map
@@ -14,6 +15,11 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Generated
+NativeScript/ThunderBolt-NS/app/Bridge/*
+NativeScript/ThunderBolt-NS/app/BuildEnvironment.json
+
 
 # General
 .DS_Store

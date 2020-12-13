@@ -2,9 +2,17 @@
 import { app, BrowserWindow, ipcMain, Menu, dialog } from 'electron'
 import * as path from 'path'
 
+import {AppGateway} from './src/AppGateway'
+new AppGateway(ipcMain)
+
 console.log('Launching Electron App\n')
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'YES'
+
+
+// TODO: load the last saved size and position from settings
+// if not there, use the configured start size
+
 
 function createWindow (): void {
     // Create the browser window.
@@ -17,6 +25,14 @@ function createWindow (): void {
             enableRemoteModule: false,
             preload: path.join(__dirname, 'preload.js')
         }
+    })
+
+    // send eindow events via ipc
+    mainWindow.on('resize', e=> {
+        const size = mainWindow.getSize()
+        // console.log('electron sees resize ', size)
+        AppGateway.sendMessage('EV', {subject: 'resize', data: size})
+
     })
 
     // and load the index.html of the app.
@@ -47,7 +63,12 @@ app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
 })
 
+// TODO: environment contribution, os.platform and os.release
+// because we might be running on something other than the build system.
+
 const isMac = process.platform === 'darwin'
+
+// TODO: move menu creation to a cross-platform solution (will make a hamburger menu for mobile)
 
 const template = [
     // { role: 'appMenu' }
@@ -172,5 +193,3 @@ Menu.setApplicationMenu(menu)
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-import {AppGateway} from './src/AppGateway'
-new AppGateway(ipcMain)

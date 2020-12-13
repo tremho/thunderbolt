@@ -102,6 +102,8 @@ module.exports = env => {
         watchOptions: {
             ignored: [
                 appResourcesFullPath,
+                // Don't watch riot files
+                "**/*.riot",
                 // Don't watch hidden files
                 "**/.*",
             ]

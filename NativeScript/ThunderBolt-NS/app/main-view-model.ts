@@ -12,10 +12,10 @@ export class HelloWorldModel extends Observable {
         return this._message;
     }
 
-    set message(value: string) {
+    set mainLabel(value: string) {
         if (this._message !== value) {
             this._message = value;
-            this.notifyPropertyChange('message', value);
+            this.notifyPropertyChange('mainLabel', value);
         }
     }
 }

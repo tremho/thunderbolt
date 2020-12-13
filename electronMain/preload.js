@@ -75,6 +75,7 @@ fnames.forEach(fname => {
 ipcRenderer.on('message', (event, data) => {
   const msgName = data.name
   const msg = data.data
+  // console.log('ipcRenderer hears message ', msgName, msg)
   const lsts = messageListeners[msgName] || []
   for(let i=0; i<lsts.length; i++) {
     lsts[i].callback(msg)

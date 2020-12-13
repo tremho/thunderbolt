@@ -7,3 +7,7 @@ electronMain/build/
 electronMain/node_modules/
 
 
+ref/
+
+NativeScript/ThunderBolt-NS/app/Bridge/
+NativeScript/ThunderBolt-NS/app/BuildEnvironment.json

@@ -48,6 +48,11 @@ export class AppGateway {
         // console.log('sending ipc message', name, data)
         if(AppGateway.ipcMessageSender) {
             AppGateway.ipcMessageSender.send('message', {name, data})
+        } else {
+            // console.error('no ipcMessageSender')
+            setTimeout(() => {
+                AppGateway.sendMessage(name, data)
+            }, 1000)
         }
     }
 }

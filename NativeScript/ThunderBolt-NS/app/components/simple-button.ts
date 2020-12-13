@@ -1,0 +1,22 @@
+
+import ComponentBase from './ComponentBase'
+
+import {Button} from '@nativescript/core'
+
+import {View} from '@nativescript/core'
+
+export class SimpleButton extends ComponentBase {
+    private button:Button
+
+    // Override to create our button
+    public createControl() {
+        // no need to call super, because it doesn't exist
+        this.button = new Button()
+        this.button.text = this.get('text')
+        this.setActionResponder(this.button, 'tap', 'action')
+        this.container.addChild(this.button)
+        // this.addBinding(this.button, 'btnName', 'text')
+    }
+
+}
+

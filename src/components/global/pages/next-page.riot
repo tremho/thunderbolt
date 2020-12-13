@@ -1,0 +1,19 @@
+<next-page>
+    <h1>Next Page</h1>
+    <simple-label bind="testValues.mainLabel as text" text="Hello, this is the next page"/>
+
+    <script>
+        import * as activity from './next-page'
+        export default {
+          activity
+          // onBeforeMount (props, state) {
+          //   console.log(this.root.tagName, 'Setting "activity"')
+          //   this.activity = activity
+          // }
+          // onMounted() {
+          //   this.activity.appStart(cm.getApp())
+          // }
+        }
+
+    </script>
+</next-page>

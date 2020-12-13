@@ -1,11 +1,11 @@
 
 import * as riot from 'riot'
 // import App from './scratch-app.riot'
-import App from './app.riot'
-import AppCore from './app-core/AppCore'
+import App from './components/global/main/app.riot'
+import {AppCore} from './app-core/AppCore'
 import registerGlobalComponents from './register-global-components'
 
-import * as MainPage from '../activitySource/mainPage'
+import * as MainPage from './components/global/pages/main-page'
 
 console.log('Running under Riot', riot.version)
 console.log(__dirname)
@@ -20,16 +20,18 @@ registerGlobalComponents()
 riot.mount('[data-riot-component]')
 const mountApp = riot.component(App)
 const coreApp = new AppCore()
-
-let app;
 console.log('starting app...')
-coreApp.requestMessages()
-coreApp.setProjectRoot('/Users/sohmert/tbd/thunderbolt')
 coreApp.setupUIElements().then(() => {
-  console.log('now mounting and running Riot app')
-  app = mountApp( document.getElementById('root'), { app: coreApp } )
-  console.log('about to start MainPage')
-  MainPage.appStart(coreApp)
+
+  // Add things from here to the environment. (required)
+  const env = coreApp.model.getAtPath('environment')
+  env.framework.riot = riot.version // add the riot version here
+  coreApp.model.setAtPath('environment', env)
+
+  console.log('now mounting and running Riot app UI')
+  mountApp( document.getElementById('root'), { app: coreApp } )
+  // go to main page
+  coreApp.navigateToPage('main')
 })
 
 

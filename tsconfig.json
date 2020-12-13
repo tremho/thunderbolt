@@ -11,5 +11,8 @@
       "es2015.proxy"
     ]
   },
-  "include": ["./src/**/*"]
+  "include": [
+    "./src/**/*",
+    "./appSource/**/*"
+  ]
 }

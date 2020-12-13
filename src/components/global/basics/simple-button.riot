@@ -1,0 +1,40 @@
+
+<simple-label>
+    <div>
+        <button onclick="{onClick}">Press Me</button>
+    </div>
+    <style>
+    </style>
+    <script>
+      import {newCommon} from '../../../app-core/ComCommon'
+      let cm;
+      export default {
+        state: {},
+        bound: {},
+        onBeforeMount(props, state) {
+          cm = newCommon(this)
+          this.bound.text = props.text // reset to props default
+        },
+        onMounted(props, state) {
+          console.log(this.root.tagName, 'onMounted', props, state)
+          let span = this.$('button')
+          cm.setCommonProps(span, props)
+          cm.bindComponent()
+        },
+        onBeforeUpdate(props, state) {
+        },
+        onUpdated(props, state) {
+        },
+        onBeforeUnmount(props, state) {
+          this.bound = {}
+        },
+        onUnmounted(props, state) {
+        },
+        onClick(e) {
+          // call via binding context
+          cm.getApp().callEventHandler('onClick', 'action', e)
+        }
+
+      }
+    </script>
+</simple-label>

@@ -105,8 +105,6 @@ export class AppCore {
 
         // set the infomessage log handling
         if(!check.mobile) {
-            this.componentIsReady() // not used in riot, so clear the gate
-
             mainApi.messageInit().then(() => {
                 console.log('messages wired')
                 this.model.addSection('infoMessage', {messages: []})
