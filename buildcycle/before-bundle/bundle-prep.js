@@ -26,8 +26,7 @@ function copyFolderRecursiveSync( source, target ) {
   console.log('from '+source+ ' to '+targetFolder)
 
   if ( !fs.existsSync( targetFolder ) ) {
-    fs.
-    mkdirSync( targetFolder );
+    fs.mkdirSync( targetFolder, {recursive: true} );
   }
 
   //copy
@@ -54,9 +53,5 @@ const root = path.resolve(__dirname, '../../') // back out of buildcycle/before-
 const srcPath = path.resolve(root, 'src')
 const buildPath = path.resolve(root, 'build')
 const distPath = path.resolve(root, 'dist')
-copyFolderRecursiveSync(path.join(srcPath, 'components'), path.join(buildPath, 'src'))
-// copy the app .riot 'page' files
-fs.copyFileSync(path.join(root, 'src', 'app.riot'), path.join(buildPath, 'src', 'app.riot'))
-fs.copyFileSync(path.join(root, 'appSource', 'mainPage.riot'), path.join(buildPath, 'appSource', 'mainPage.riot'))
-fs.copyFileSync(path.join(root, 'appSource', 'nextPage.riot'), path.join(buildPath, 'appSource', 'nextPage.riot'))
+copyFolderRecursiveSync(path.join(srcPath, 'components'), buildPath)
 console.log('copy complete')

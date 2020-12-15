@@ -1,7 +1,7 @@
 
 <simple-label>
     <div>
-        <button onclick="{onClick}">Press Me</button>
+        <button onclick="{onClick}">{bound.text}</button>
     </div>
     <style>
     </style>
@@ -13,7 +13,7 @@
         bound: {},
         onBeforeMount(props, state) {
           cm = newCommon(this)
-          this.bound.text = props.text // reset to props default
+          this.bound.text = props.text || this.root.tagName // reset to props default
         },
         onMounted(props, state) {
           console.log(this.root.tagName, 'onMounted', props, state)

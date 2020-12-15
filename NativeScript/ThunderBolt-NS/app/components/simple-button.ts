@@ -12,7 +12,7 @@ export class SimpleButton extends ComponentBase {
     public createControl() {
         // no need to call super, because it doesn't exist
         this.button = new Button()
-        this.button.text = this.get('text')
+        this.button.text = this.get('text') || 'simple-button'
         this.setActionResponder(this.button, 'tap', 'action')
         this.container.addChild(this.button)
         // this.addBinding(this.button, 'btnName', 'text')

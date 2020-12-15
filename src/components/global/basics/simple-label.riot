@@ -13,7 +13,7 @@
             bound: {},
             onBeforeMount(props, state) {
               cm = newCommon(this)
-              this.bound.text = props.text
+              this.bound.text = props.text || this.root.tagName
               console.log(this.root.tagName, 'onBeforeMount', props, state, this.bound)
             },
             onMounted(props, state) {

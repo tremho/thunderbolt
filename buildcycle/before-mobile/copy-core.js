@@ -22,7 +22,7 @@ function copyFileSync( source, target ) {
 const tbroot = path.resolve(__dirname, '../../') // back out of buildcycle/before-mobile
 const nsBridge = path.join(tbroot, 'NativeScript', 'ThunderBolt-NS', 'app', 'Bridge')
 const appCore = path.join(tbroot, 'src', 'app-core')
-const dtBuildEnv = path.join(tbroot, 'build', 'src', 'BuildEnvironment.json')
+const dtBuildEnv = path.join(tbroot, 'build', 'BuildEnvironment.json')
 const nsBuildEnv = path.join(tbroot, 'NativeScript', 'ThunderBolt-NS', 'app', 'BuildEnvironment.json')
 
 copyFileSync(path.join(appCore, 'AppCore.ts'), path.join(nsBridge, 'AppCore.ts'))

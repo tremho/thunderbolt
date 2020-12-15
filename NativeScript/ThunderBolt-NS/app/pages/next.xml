@@ -1,9 +1,0 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="onLoaded" navigatedTo="onNavigatedTo"
-      xmlns:tb="~/components/tb-components"
->
-    <ActionBar title="Next Page" icon=""></ActionBar>
-
-    <StackLayout>
-        <tb:SimpleLabel bind="testValues.mainLabel as text"/>
-    </StackLayout>
-</Page>

@@ -476,11 +476,45 @@ but I'm not in the mood.
 √  Need now to fix the desktop because the gates are not
 used there.
 
-Also should generate the loaded and navigatedTo handlers rather
-than having them be in the launch template.
+<s>Also should generate the loaded and navigatedTo handlers rather
+than having them be in the launch template.</s>
+- Maybe a 2.0 thing... for now, let's concentrate on generating
+the xml and .ts {N} sources from common app code
 
-Also should clean up the once-again irrelevant history.
- 
+√ Also should clean up the once-again irrelevant history.
+
+###### Work on generative tooling for app code
+
+√ - generate app.riot for desktop
+
+- √ turn page.ts into  {N} version
+    - `page.ts` shell
+    - `page-logic.ts` code w/revised import statement
+- √ turn page.riot into {N} page.xml
+    -  migrate items with dash tags within `<app>` block to 
+    become `tb:CamelCase` renamed versions in the xml
+    and do the block replacement to page template
+
+##### It's always something, isn't it?
+
+<s>- Properties from page.riot markup are not being
+communicated to the actual page-page.riot layout component</s>
+
+- the onclick={onClick} of the riot button needs to come
+from the 'action' property to be consistent with
+mobile side (onclick/tap => [action])
+
+###### Idiot! Pages are now in components/pages, not appSource.
+
+- √ Redo tooling for mobile commute to come from correct sources.
+
+_Okay.  THings are nominally working up to this point. 
+Some loose ends (like back key, and console logs) but
+we can enumerate and fix those later_
+
+###### Next, look at generative migration of component code
+    
+    
     
 
 

@@ -4,11 +4,10 @@ import {environment, check} from './EnvCheck'
 import {AppModel} from "./AppModel";
 import {basename} from "path";
 import {register, unregister} from "riot";
-let config, StringParser, riot
+let StringParser, riot
 let getInfoMessageRecorder, InfoMessageRecorder
 if(!check.mobile) {
     try {
-        config = require('../../appSource/app-page-directory').default
         StringParser = require('../general/StringParser')
         const Imr = require('./InfoMessageRecorder')
         getInfoMessageRecorder = Imr.getInfoMessageRecorder;
@@ -191,6 +190,8 @@ export class AppCore {
         // for mobile, we need to do that through native navigation, but we still want the model to be the same
         this.model.setAtPath('navigation.pageId', pageId)
 
+        // note that this isn't used on the mobile side, but we record it anyway.
+        // this may be useful later if we have any history-related functionality in common.
         if(!skipHistory) {
             this.history.push({
                 pageId: pageId,
@@ -203,15 +204,21 @@ export class AppCore {
 
             const navigationEntry = {
                 moduleName: pageref,
-                backstackVisible: false // we use our own history now
+                backstackVisible: !skipHistory
             };
             theFrame && theFrame.navigate(navigationEntry)
+
+            // apparently, we can pass a function instead of a navigationEntry to construct a Page
+            // which might be something to look at later if we want to work from our own common page definition
+            // instead of writing out {N} syntax files.
+            // Function needs to build full page including the layout stack and any event handlers.
+            // not sure what effect this has on back history, since there's nothing passed for that.
+
         } else {
             const activity = findPageActivity(pageId)
             this.startPageLogic(pageId, activity)
         }
     }
-
 
 
     /**
