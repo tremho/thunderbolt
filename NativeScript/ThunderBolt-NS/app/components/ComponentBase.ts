@@ -13,15 +13,15 @@ export default class ComponentBase extends StackLayout {
             super()
             this.container = this
             this.on('layoutChanged', () => {
-                console.log('in layoutChanged')
+                // console.log('in layoutChanged')
                 if (!this._isInit) {
                     this._isInit = true
                     this.common = new ComCommon(this)
                     this.common.waitForModel().then(() => {
-                        console.log('past waitReady')
+                        // console.log('past waitReady')
                         // must occur on a nominal timeout to work across platforms
                         // setTimeout(() => {
-                            console.log('executing timeout -- creating component')
+                        //     console.log('executing timeout -- creating component')
                             this.localBinds = []
                             this.createControl()
                             this.common.bindComponent()
@@ -95,7 +95,7 @@ export default class ComponentBase extends StackLayout {
         view.on(eventName, ev => {
             ed.platEvent = ev
             const activity = getTheApp().currentActivity
-            console.log('should call '+target)
+            // console.log('should call '+target)
             if(activity && typeof activity[target] === 'function') {
                 activity[target](ed)
             }

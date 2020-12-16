@@ -16,7 +16,7 @@
           this.bound.text = props.text || this.root.tagName // reset to props default
         },
         onMounted(props, state) {
-          console.log(this.root.tagName, 'onMounted', props, state)
+          // console.log(this.root.tagName, 'onMounted', props, state)
           let span = this.$('button')
           cm.setCommonProps(span, props)
           cm.bindComponent()

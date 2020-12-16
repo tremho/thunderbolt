@@ -508,12 +508,79 @@ mobile side (onclick/tap => [action])
 
 - √ Redo tooling for mobile commute to come from correct sources.
 
-_Okay.  THings are nominally working up to this point. 
+_Okay.  Things are nominally working up to this point. 
 Some loose ends (like back key, and console logs) but
 we can enumerate and fix those later_
 
 ###### Next, look at generative migration of component code
     
+This one will be harder because there is less in common.
+The riot code has markup + lifecycle code
+with binding and event setup
+
+The NS code is all constructional.
+
+- Layout:
+    - riot: span class Label
+    - NS : Label
+    
+- Prop preset
+    - riot: beforeMount
+    - NS: in construction
+    
+- styling and binding
+    - riot: onMounted
+    - NS: in construction
+    
+- event attachment and binding
+    - riot: layout & handler code
+    - NS: setActionResponder            
+
+
+Maybe theoretically, we could have a form that
+captures info for each of these sections and 
+then uses that to render layout+code / code for
+both targets.
+
+But, for now, let's just hand-create them a while longer
+and get further down the road.
+
+###### Cleanup and loose end items thus far
+
+- √ Key handler re-attachment to handle back action on Desktop
+- Remove extraneous console output.
+- Action bar and options
+
+##### Things to deal with forward
+
+- __establishing page lifecycle entry points__ - We still are
+using the misnamed `appStart` function as our only touchpoint.
+    - `pageStart` (from back / from page)
+    - `pageLeave` - on nav when currentActivity changes
+    - `pageUnload` -- Can we unmount hidden pages? Maybe
+    on an LRU threshold?
+- __importing into page code__ - imports into the page will
+get stripped out when going to mobile, and even if they didn't,
+the files would need to be migrated. So we need a pattern for 
+this, like imports must come from the same level or lower folders.
+And then we need to recognize and process these.  But mostly, 
+we should establish a pattern by which any helper code goes
+into the __common app code__ rather than the UI pages.
+
+    - Do this by creating a `common` directory in `src` (next
+    to app-core and components) and migrate this to `app/common` (parallel with Bridge)
+    
+    - common is for devs, treat `general` in the same basic
+    way, but it is populated with our own library stuff that
+    can be imported as desired by developer. 
+
+
+###### Things I'm noticing
+- √ attached the key back, but the back action isn't
+quite right somehow.  Trace and fix.
+
+
+
     
     
 

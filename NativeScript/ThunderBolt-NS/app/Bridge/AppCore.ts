@@ -45,7 +45,7 @@ let theFrame:any;
 export function setTheApp(app:any, frame:any) {
     theApp = app;
     theFrame = frame;
-    console.log('app and frame set', theApp, theFrame)
+    // console.log('app and frame set', theApp, theFrame)
 }
 export function getTheApp() {
     return theApp
@@ -94,26 +94,26 @@ export class AppCore {
         componentGateCleared = true
     }
     public waitReady() {
-        console.log('waiting for ready...')
+        // console.log('waiting for ready...')
         if(componentGateCleared) return this.modelGate
         return Promise.all([this.componentGate, this.modelGate])
     }
 
     public setupUIElements() {
-        console.log('>>> setupUIElements >>>')
+        // console.log('>>> setupUIElements >>>')
 
         // set the infomessage log handling
         if(!check.mobile) {
             this.componentIsReady() // not used in riot, so clear the gate
 
             mainApi.messageInit().then(() => {
-                console.log('messages wired')
+                // console.log('messages wired')
                 this.model.addSection('infoMessage', {messages: []})
                 mainApi.addMessageListener('IM', data => {
                     writeMessage(data.subject, data.message)
                 })
                 mainApi.addMessageListener('EV', data => {
-                    console.log('event info incoming:', data)
+                    // console.log('event info incoming:', data)
                     let evName = data.subject;
                     let evData = data.data;
                     if (evName === 'resize') {
@@ -141,10 +141,10 @@ export class AppCore {
         // TODO: remove when done with initial setup testing
         this.model.addSection('testValues', {mainLabel: 'Hello, World! This is ThunderBolt!'})
 
-        console.log('<<<setupUIElements<<<')
+        // console.log('<<<setupUIElements<<<')
 
         this.modelGateResolver()
-        console.log('model gate cleared')
+        // console.log('model gate cleared')
         return this.waitReady()
 
     }
@@ -156,7 +156,7 @@ export class AppCore {
 
 
     private keyListener(event) {
-        console.log('key event seen '+event.key)
+        // console.log('key event seen '+event.key)
         if(event.isComposing || event.code === "229") {
             return;
         }
@@ -192,10 +192,12 @@ export class AppCore {
 
         // note that this isn't used on the mobile side, but we record it anyway.
         // this may be useful later if we have any history-related functionality in common.
+        let curActivityId = this.currentActivity && this.currentActivity.activityId
+        let curContext = this.currentActivity && this.currentActivity.context
         if(!skipHistory) {
             this.history.push({
-                pageId: pageId,
-                context: context
+                pageId: curActivityId,
+                context: curContext
             })
         }
 
@@ -231,6 +233,10 @@ export class AppCore {
         activity.activityId = id;
         this.currentActivity = activity;
 
+        if(!check.mobile) {
+            this.attachPageKeyListener()
+        }
+
         activity.appStart(this, context)
 
     }
@@ -238,6 +244,7 @@ export class AppCore {
     public navigateBack() {
         let popBack = this.history.pop()
         if(popBack) {
+            // console.log(popBack)
             this.navigateToPage(popBack.pageId, popBack.context, true)
         }
     }
@@ -313,20 +320,6 @@ function findPageActivity(pageId) {
     const appComp = getComponent(el)
     const pageCompEl = appComp.$$(tag)[0]
     const pageComp = getComponent(pageCompEl)
-    console.log('found page', pageComp)
+    // console.log('found page', pageComp)
     return pageComp.activity
 }
-
-// const registeredSet = new Map<string, any>()
-// export function registerComponent(name, component) {
-//     registeredSet.set(name, component)
-// }
-// function reRegister() {
-//     registeredSet.forEach((component, name) => {
-//         try {
-//             riot.unregister(name)
-//         } catch(e) {}
-//         riot.register(name, component)
-//     })
-// }
-

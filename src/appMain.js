@@ -20,7 +20,7 @@ registerGlobalComponents()
 riot.mount('[data-riot-component]')
 const mountApp = riot.component(App)
 const coreApp = new AppCore()
-console.log('starting app...')
+// console.log('starting app...')
 coreApp.setupUIElements().then(() => {
 
   // Add things from here to the environment. (required)
@@ -28,7 +28,7 @@ coreApp.setupUIElements().then(() => {
   env.framework.riot = riot.version // add the riot version here
   coreApp.model.setAtPath('environment', env)
 
-  console.log('now mounting and running Riot app UI')
+  // console.log('now mounting and running Riot app UI')
   mountApp( document.getElementById('root'), { app: coreApp } )
   // go to main page
   coreApp.navigateToPage('main')

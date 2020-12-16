@@ -23,7 +23,7 @@ function copyFolderRecursiveSync( source, target ) {
 
   //check if folder needs to be created or integrated
   var targetFolder = path.join( target, path.basename( source ) );
-  console.log('from '+source+ ' to '+targetFolder)
+  // console.log('from '+source+ ' to '+targetFolder)
 
   if ( !fs.existsSync( targetFolder ) ) {
     fs.mkdirSync( targetFolder, {recursive: true} );

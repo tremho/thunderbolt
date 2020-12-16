@@ -45,7 +45,7 @@ function writeEnvironment() {
   try {
     const str = '\n' + JSON.stringify(environment, null, 2) + '\n'
     const outPath = path.normalize(path.join(tbroot, 'build', 'BuildEnvironment.json'))
-    console.log('writing to ', outPath)
+    // console.log('writing to ', outPath)
     fs.writeFileSync(outPath, str)
   } catch(e) {
     console.error(e)
