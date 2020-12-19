@@ -1,0 +1,48 @@
+<action-menu>
+    <span class="action-menu"
+          onclick="{openMenu}"
+    >
+        &#x2630;
+    </span>
+    <div class="menu-popover" if="{state.open}">
+        <slot/>
+    </div>
+
+    <style>
+        .action-menu {
+            width: 2rem;
+            height: 2rem;
+            border: 1px solid darkkhaki;
+        }
+        .menu-popover {
+            cursor: pointer;
+            position: absolute;
+            background-color: white;
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+      import {newCommon} from '../../../app-core/ComCommon'
+      let cm;
+      export default {
+        onBeforeMount() {
+          cm = newCommon(this)
+        },
+        onUpdated(props, state) {
+          if(state.open) {
+            let mn = this.$('.menu-popover')
+            if (mn) {
+              mn.onmouseleave = (e) => {
+                let comp = cm.getComponent(e.srcElement)
+                comp.update({ open: false })
+              }
+            }
+          }
+        },
+        openMenu(e) {
+          let comp = cm.getComponent(e.srcElement)
+          comp.update({open:true})
+        }
+      }
+    </script>
+</action-menu>

@@ -1,0 +1,55 @@
+<ab-menu-item>
+    <p onclick="{performAction}" if="{props.name}">{props.name}</p>
+    <p onclick="{openSubmenu}" if="{props.submenu}">{props.submenu} &#x25b8;</p>
+    <div class="sub-menu" if="{state.submenu}">
+        <slot/>
+    </div>
+    <style>
+        .sub-menu {
+            position: fixed;
+            background-color: white;
+            border: 1px solid black;
+
+        }
+    </style>
+    <script>
+      import {newCommon} from '../../../app-core/ComCommon'
+      let cm;
+      export default {
+        onBeforeMount() {
+          cm = newCommon(this)
+        },
+        onUpdated(props, state) {
+          if(state.submenu) {
+            console.log('position submenu at '+JSON.stringify(state.submenu))
+            let sm = this.$('.sub-menu')
+            if(sm) {
+              sm.style.top = state.submenu.top + 'px'
+              sm.style.left = state.submenu.left + 'px'
+              sm.onmouseleave = (e) => {
+                let comp = cm.getComponent(e.srcElement)
+                comp.update({ submenu: false })
+              }
+
+            }
+          }
+        },
+        performAction(e) {
+          let comp = cm.getComponent(e.srcElement)
+          let action = comp.props.action
+          console.log('Perform action '+action+ ' for '+comp.props.name)
+        },
+        openSubmenu(e) {
+          console.log('openSubmenu')
+          let comp = cm.getComponent(e.srcElement)
+          if(comp.props.submenu === 'lower level') {
+            console.log('debug break')
+          }
+          let itemBounds = e.srcElement.getBoundingClientRect()
+          comp.update({submenu: {top:itemBounds.top, left:itemBounds.right}})
+        }
+
+      }
+    </script>
+
+</ab-menu-item>

@@ -1,5 +1,38 @@
 <main-page>
-    <h1>Main</h1>
+    <action-bar no-back="true" title="Main Page">
+        <action-toolbar slot="toolbar">
+            <ab-toolbutton text="TB1" action="onToolbutton"/>
+            <ab-toolbutton text="TB2" action="onToolbutton"/>
+        </action-toolbar>
+        <action-menu slot="menu">
+            <ab-menu-item name="Save democracy" action="onMenu"/>
+            <ab-menu-item name="Save climate" action="onMenu" disabled="true"/>
+            <ab-menu-item name="Save world" action="onMenu"/>
+            <ab-menu-item submenu="more">
+                <ab-menu-item name="apples" action="onMenu"/>
+                <ab-menu-item name="cherries" action="onMenu"/>
+            </ab-menu-item>
+            <ab-menu-item name="chicken"/>
+            <ab-menu-item submenu="still more">
+                <ab-menu-item name="pecans"/>
+                <ab-menu-item name="walnuts"/>
+                <ab-menu-item name="cashews"/>
+                <ab-menu-item submenu ="lower level">
+                    <ab-menu-item name="men's furnishings"/>
+                    <ab-menu-item name="sporting goods"/>
+                    <ab-menu-item name="lingerie"/>
+                    <ab-menu-item name="bar"/>
+                </ab-menu-item>
+            </ab-menu-item>
+            <ab-menu-item name="indian"/>
+            <ab-menu-item name="butter"/>
+        </action-menu>
+        <indicator-bar slot="indicators">
+            <ab-indicator label="1"/>
+            <ab-indicator label="2"/>
+            <ab-indicator label="3"/>
+        </indicator-bar>
+    </action-bar>
     <simple-label bind="testValues.mainLabel as text" text="Hello"/>
     <simple-button text="Press Me" action="onClick"/>
 

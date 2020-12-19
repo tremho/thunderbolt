@@ -163,18 +163,18 @@ articulated AppCore/AppModel binding story
     
 - __12/4__    
 
-- [ ] Build out some basic components and tests in TBD mode
+- [X] Build out some basic components and tests in TBD mode
     - tap and count
-    - get input from text view
-    - choose a picture by name in a radio list
+    ◊ - get input from text view
+    ◊ - choose a picture by name in a radio list
 
-- [ ] handle new page navigation
+- [X] handle new page navigation
 
-- [ ] All app action is in the `activitySource` page files
+- [X] All app action is in the <s>`activitySource`</s> page files
 
-- [ ] app-core is potentially shareable and might relocate folders
+- [X] app-core is potentially shareable and might relocate folders
 
-- [ ] component code (riot / NS xml+back) is separate
+- [X] component code (riot / NS xml+back) is separate
 
 If we get to this point with some basic examples before mid-month, 
 we can afford to spend a few days on the pipe-dream of 
@@ -548,7 +548,7 @@ and get further down the road.
 ###### Cleanup and loose end items thus far
 
 - √ Key handler re-attachment to handle back action on Desktop
-- Remove extraneous console output.
+- √ Remove extraneous console output.
 - Action bar and options
 
 ##### Things to deal with forward
@@ -579,6 +579,12 @@ into the __common app code__ rather than the UI pages.
 - √ attached the key back, but the back action isn't
 quite right somehow.  Trace and fix.
 
+
+###### Moving ahead with action bar
+
+putting design thoughts in a different doc
+
+[Action Bar design](actionbar.md)
 
 
     

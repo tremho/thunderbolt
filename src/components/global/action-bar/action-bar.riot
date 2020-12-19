@@ -1,0 +1,22 @@
+<action-bar>
+    <div class="action-bar">
+        <ab-backbutton if="{!props.noBack}"/>
+        <p if="{props.noBack}"/>
+        <slot name="toolbar"/>
+        <slot name="menu"/>
+        <ab-title title="{props.title}"/>
+        <slot name="indicators"/>
+    </div>
+    <style>
+        .action-bar {
+            display:grid;
+            grid-template-columns: 2rem 1fr 2rem 2fr 2fr;
+            grid-template-areas: "back toolbar menu title indicators";
+            column-gap: 6px;
+            align-items: center;
+            border-bottom: 0.2rem solid cornflowerblue;
+            padding-bottom: 0.4rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</action-bar>
