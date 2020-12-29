@@ -102,6 +102,7 @@ export class ComCommon extends NotCommon{
         if(check.mobile) return arg; // returns ourselves: TODO: a more refined version would look at parents to find something from ComponentBase
 
         let el = (arg as HTMLElement)
+        if(!el) el = this.riot.root
         try {
             let syms;
             do {
@@ -347,8 +348,12 @@ export class ComCommon extends NotCommon{
             width: '100%',
             height: '100%'
         }
-        el.style.width = props.width || defaults.width;
-        el.style.height = props.height || defaults.height;
+        let width:any = (props.width || defaults.width)
+        let height:any = (props.height || defaults.height)
+        if(typeof width === 'number') width = width + 'px'
+        if(typeof height === 'number') height = height + 'px'
+        el.style.width = width;
+        el.style.height = height;
         el.style.background = props.background || defaults.background;
         el.style.backgroundColor = props.backgroundColor || defaults.backgroundColor;
     }

@@ -2,7 +2,7 @@
   "name": "thunderbolt",
   "version": "0.0.0",
   "description": "Project development management tool",
-  "main": "build/main.js",
+  "main": "build/electronMain/main.js",
   "scripts": {
     "start": "tsc; electron .",
     "clean": "rm -fr ./build"

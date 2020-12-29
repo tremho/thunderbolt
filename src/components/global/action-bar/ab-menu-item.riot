@@ -1,8 +1,12 @@
 <ab-menu-item>
-    <p onclick="{performAction}" if="{props.name}">{props.name}</p>
-    <p onclick="{openSubmenu}" if="{props.submenu}">{props.submenu} &#x25b8;</p>
-    <div class="sub-menu" if="{state.submenu}">
-        <slot/>
+    <p onclick="{performAction}" if="{!props.children}">{props.label}</p>
+    <p onclick="{openSubmenu}" onmouseleave="{closeSubmenu}" if="{props.children}">{props.label} &#x25b8;</p>
+    <div class="sub-menu" if="{state.submenu}" onmouseenter="{keepOpen}" onmouseleave="{allowClose}">
+        <ab-menu-item each="{item in props.children}"
+                      label="{item.label}"
+                      id="{item.id}"
+                      disabled="{item.disabled}"
+                      children="{item.children}"/>
     </div>
     <style>
         .sub-menu {
@@ -15,13 +19,14 @@
     <script>
       import {newCommon} from '../../../app-core/ComCommon'
       let cm;
+      let inside = 0
       export default {
         onBeforeMount() {
           cm = newCommon(this)
         },
         onUpdated(props, state) {
           if(state.submenu) {
-            console.log('position submenu at '+JSON.stringify(state.submenu))
+            // console.log('position submenu at '+JSON.stringify(state.submenu))
             let sm = this.$('.sub-menu')
             if(sm) {
               sm.style.top = state.submenu.top + 'px'
@@ -36,18 +41,34 @@
         },
         performAction(e) {
           let comp = cm.getComponent(e.srcElement)
-          let action = comp.props.action
-          console.log('Perform action '+action+ ' for '+comp.props.name)
+          cm.getApp().onMenuAction(comp.props)
         },
         openSubmenu(e) {
-          console.log('openSubmenu')
+          // console.log('openSubmenu')
           let comp = cm.getComponent(e.srcElement)
-          if(comp.props.submenu === 'lower level') {
-            console.log('debug break')
-          }
           let itemBounds = e.srcElement.getBoundingClientRect()
-          comp.update({submenu: {top:itemBounds.top, left:itemBounds.right}})
+          comp.update({submenu: {top:itemBounds.top - 12, left:itemBounds.right }})
+        },
+        closeSubmenu(e) {
+          // console.log('closeSubmenu?')
+          setTimeout(() => {
+            // console.log('closeSubmenu')
+            if(!inside) {
+              // console.log('closeSubmenu!')
+                let comp = cm.getComponent(e.srcElement)
+                comp.update({ submenu: null })
+              }
+            })
+        },
+        keepOpen(e) {
+          inside++;
+          // console.log('keep open '+inside)
+        },
+        allowClose(e) {
+          inside--;
+          // console.log('allow close '+inside)
         }
+
 
       }
     </script>

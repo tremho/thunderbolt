@@ -64,5 +64,5 @@ toolbar.
     - √ I think I can do what I need with a Grid Layout
     - √ experiment with a scratch and then implement.
 
-- [ ] Need to build the hamburger menu control.
+- [X] Need to build the hamburger menu control.
 

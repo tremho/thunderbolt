@@ -584,8 +584,82 @@ quite right somehow.  Trace and fix.
 
 putting design thoughts in a different doc
 
-[Action Bar design](actionbar.md)
+√ [Action Bar design](actionbar.md)
 
+- [ ] Make this work for mobile
+
+    - √ Kinda there, but realizing menu needs to
+    come from app model binding for both
+    
+- [ ] Redesign menu @ desktop side for app binding
+- [ ] use same model for toolbar and indicators
+    - including named injections
+    
+---
+Not entirely sure what I was thinking above, but
+the menu work is in progress, just I'm not into it right now.
+
+--- 
+Pros and cons of menu binding by whole or by part
+
+|by whole | by part|
+ ---------|--------|
+ |√ Easy menu structure| ◊ redundant prop management|
+ |◊ Whole menu read per binding |√ targeted binding |
+ 
+    <sigh>
+ Well, I have it in place and now am doing the binding
+ need to change our current menu component
+ so that it comes from a list rather than a slot
+ the list comes from the binding
+ Key is menu-item.  Follow projectus tree example     
+
+Once finished with current slag:
+
+---
+Cooliomente! It's working... 
+
+but
+- √ should have a close popup on leave or click-out
+- √ need to make onMenuAction in app with forward to current activity
+- √ need to support desktop menu
+    - √ migrate target to intermediate
+    - support accelerators 
+- need to support disabled
+- cute to support prop styles and icons
+- make a demo to test binding
+    - test submenu
+        - add item
+        - remove item
+        - clear (and put back add/remove)
+    - disable menu - toggles disable on submenu
+---    
+
+__Oh oh..__
+
+The model isn't what I wanted.
+
+Toplevel sections have items that have children
+I want each of the items in toplevel to be its
+own section with props (no children list)
+but we must have an $items list for each section to
+keep order. 
+
+But, Rather than refactor entirely again, I have it
+working now with a change in the filtering.
+
+Now the question is, will my dynamic menu ops work
+satisfactorily with this arrangement?
+
+
+---
+
+Whoohoo and then pick up the toolbar and indicators to round this
+fun time out. Just in time for the new year!
+
+frankly, not expecting anything material on a 'ready to try for
+a real-life scenario' candidate until sometime during the
+Biden Administration.
 
     
     

@@ -1,0 +1,49 @@
+
+@Dm#APP!ThunderBolt         // App menu - name of app (mac only)
+    @Dm#APP_ABOUT:about,About ThunderBolt
+    @Dm#APP_CHECKUPDATE,Check for Update
+    @Dm#--                                      // special notation for separator
+    @Dm#APP_SERVICES:services,Services          // customary on Mac
+    @Dm#--                                      // special notation for separator
+    @Dm#APP_HIDE:hide,Hide                      // customary on Mac
+    @Dm#APP_HIDEOTHERS:hideothers,Hide Others   // customary on Mac
+    @Dm#APP_UNHIDE:unhide,Show All              // customary on Mac
+    @Dm#--                                      // special notation for separator
+    @Dm#APP_QUIT:quit,Quit                      // customary on Mac
+
+#FILE!File                 // file menu (desktop)
+    #FILE_NEW,New...
+    #FILE_OPEN,Open...
+    @m#FILE_CLOSE:close, Close       // on mac, close the current app window, don't quit app
+    @wuai#FILE_QUIT:quit, Quit       // all others, close and quit
+
+#EDIT!Edit                 // edit menu
+    #EDIT_UNDO:undo,Undo
+    #EDIT_REDO:redo,Redo
+    #--
+    #EDIT_CUT:cut,Cut
+    #EDIT_COPY:copy,Copy
+    #EDIT_PASTE:paste,Paste
+    @m#EDIT_PASTEMATCH:pasteAndMatchStyle,Paste and Match Style
+    @m#SUBMENU!Speech                               // Customary on mac only
+        @m#SPEECH_STARTSPEECH,Start Speaking
+        @m#SPEECH_STOPSPEECH,Stop Speaking
+    @m#ENDSUBMENU
+    #EDIT_DELETE:delete,Delete
+    #EDIT_SELECTALL:selectall,Select All
+
+#OPTIONS!Options
+#FOO,Foo
+#BAR,Bar
+#BAR,Baz
+#SUBMENU!Options
+#OPTION_1,One
+#OPTION_2,Two
+#OPTION_3,Three
+#ENDSUBMENU
+#SUBMENU!Test
+#TEST_NEWITEM,Add Item
+#TEST_DISABLE,Disable Items
+#TEST_ENABLE,Enable Items
+
+

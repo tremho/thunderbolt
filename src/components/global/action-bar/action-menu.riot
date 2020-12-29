@@ -4,8 +4,14 @@
     >
         &#x2630;
     </span>
-    <div class="menu-popover" if="{state.open}">
-        <slot/>
+    <div class="menu-popover" if="{state.items}">
+        <ab-menu-item each="item in state.items"
+                      label="{item.label}"
+                      id="{item.id}"
+                      disabled="{item.disabled}"
+                      children="{item.children}"/>
+
+
     </div>
 
     <style>
@@ -32,7 +38,9 @@
           if(state.open) {
             let mn = this.$('.menu-popover')
             if (mn) {
+              mn.style.visibility = 'visible'
               mn.onmouseleave = (e) => {
+                mn.style.visibility = 'hidden'
                 let comp = cm.getComponent(e.srcElement)
                 comp.update({ open: false })
               }
@@ -40,8 +48,15 @@
           }
         },
         openMenu(e) {
+          // console.log('open menu')
           let comp = cm.getComponent(e.srcElement)
-          comp.update({open:true})
+          let items
+          const model = cm.getApp().model
+          const menu = model.getAtPath('menu-'+comp.props.menuId+'.$items')
+          if(menu && menu.length > 1) {
+            items = menu.slice(1)
+          }
+          comp.update({open:true, items})
         }
       }
     </script>

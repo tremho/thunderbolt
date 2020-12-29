@@ -2,8 +2,10 @@
 import {environment, check} from './EnvCheck'
 
 import {AppModel} from "./AppModel";
-import {basename} from "path";
-import {register, unregister} from "riot";
+
+import {setupMenu} from "../application/MenuDef"
+import * as MenuApi from "../application/MenuApi";
+
 let StringParser, riot
 let getInfoMessageRecorder, InfoMessageRecorder
 if(!check.mobile) {
@@ -123,6 +125,9 @@ export class AppCore {
                         env.screen.height = evData[1]
                         this.model.setAtPath('environment', env)
                     }
+                    if(evName === 'menuAction') {
+                        this.onMenuAction({id:evData})
+                    }
 
                 })
                 imrSingleton.subscribe(msgArray => {
@@ -137,16 +142,48 @@ export class AppCore {
         // this will allow us to do platform branching and so on
         this.model.addSection('environment', environment)
 
+        // Set up menus
+        setupMenu(this).then(()=> {
+            this.modelGateResolver()
+        })
+
         // Set up our app display
         // TODO: remove when done with initial setup testing
         this.model.addSection('testValues', {mainLabel: 'Hello, World! This is ThunderBolt!'})
 
         // console.log('<<<setupUIElements<<<')
 
-        this.modelGateResolver()
         // console.log('model gate cleared')
         return this.waitReady()
 
+    }
+
+    public setupDesktopMenu(desktopMenu) {
+        for(let i=0; i<desktopMenu.length; i++) {
+            mainApi.addMenuItem(null, desktopMenu[i])
+        }
+        mainApi.realiseMenu()
+
+    }
+
+    public get MenuApi() {
+        return MenuApi
+    }
+
+
+    public onMenuAction(props) {
+
+        const menuEvent = {
+            id: props.id,
+            app: this
+        }
+        // TODO: Handle anything global here
+        // dispatch to current activity.  include app instance in props
+        if(this.currentActivity) {
+            if(typeof this.currentActivity.onMenuAction === 'function') {
+                this.currentActivity.onMenuAction(menuEvent)
+            }
+        }
     }
 
     // TODO: make part of a more defined util section
@@ -291,6 +328,17 @@ export class AppCore {
             return null;
         }
     }
+
+    // ----------------- File API access --------------------------
+
+    readFileText(filePath) {
+        if(!check.mobile) {
+            return mainApi.readFileText(filePath)
+        } else {
+            throw Error("File APIs not implemented for mobile yet")
+        }
+    }
+
 }
 
 // as it is from ComCommon

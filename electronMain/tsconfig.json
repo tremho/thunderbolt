@@ -5,5 +5,5 @@
     "target": "es5",
     "sourceMap": true
   },
-  "include": ["./**/*"]
+  "include": ["./main.ts", "*.js", "src/**/*"]
 }

@@ -1,3 +1,4 @@
+import {MenuItem} from "../../../application/MenuApi";
 
 
 export function appStart(app:any) {
@@ -13,4 +14,14 @@ export function onClick(ed:any) {
     console.log('We got clicked! ')
     ed.app.navigateToPage('next')
 
+}
+export function onMenuAction(menuEvent) {
+    console.log('main sees a menu action for ',menuEvent.id)
+    if(menuEvent.id == 'TEST_NEWITEM') {
+        const app = menuEvent.app;
+        const newMenuItem = new MenuItem()
+        newMenuItem.label = 'Newly Added Item'
+        const menuApi = app.MenuApi
+        menuApi.addMenuItem(app.model, "TEST", newMenuItem)
+    }
 }

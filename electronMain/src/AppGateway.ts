@@ -1,6 +1,17 @@
 
+import {readFileText} from "./FileAPI"
+import {addMenuItem, realiseMenu} from "./DesktopMenu";
+//
+// function addMenuItem(a, item, target) {
+//     console.log('addMenuItem ', item, target)
+// }
+
+
 const exportedFunctions = {
-    messageInit: () => { console.log('message init stub hit') },
+    messageInit: () => { /*console.log('message init stub hit')*/ },
+    addMenuItem,
+    realiseMenu,
+    readFileText
 }
 
 /**
