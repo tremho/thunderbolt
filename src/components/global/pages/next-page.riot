@@ -1,23 +1,10 @@
 <next-page>
-    <action-bar title="Next Page">
-        <action-toolbar slot="toolbar"/>
-        <action-menu slot="menu"/>
-        <indicator-bar slot="indicators"/>
-    </action-bar>
+    <action-bar title="Main Page" menu-id="main" toolbar-id="main" indicators-id="main"/>
     <simple-label bind="testValues.mainLabel as text" text="Hello, this is the next page"/>
 
     <script>
         import * as activity from './next-page'
-        export default {
-          activity
-          // onBeforeMount (props, state) {
-          //   console.log(this.root.tagName, 'Setting "activity"')
-          //   this.activity = activity
-          // }
-          // onMounted() {
-          //   this.activity.appStart(cm.getApp())
-          // }
-        }
+        export default { activity }
 
     </script>
 </next-page>

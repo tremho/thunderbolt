@@ -33,6 +33,7 @@
       export default {
         onBeforeMount() {
           cm = newCommon(this)
+          cm.getApp().setActiveMenu(this)
         },
         onUpdated(props, state) {
           if(state.open) {
@@ -45,17 +46,19 @@
                 comp.update({ open: false })
               }
             }
+          } else {
+            let mn = this.$('.menu-popover')
+            if (mn) {
+              mn.style.visibility = 'hidden'
+            }
           }
         },
         openMenu(e) {
           // console.log('open menu')
           let comp = cm.getComponent(e.srcElement)
-          let items
-          const model = cm.getApp().model
-          const menu = model.getAtPath('menu-'+comp.props.menuId+'.$items')
-          if(menu && menu.length > 1) {
-            items = menu.slice(1)
-          }
+          const menuId = comp.props.menuId
+          const menu = cm.getApp().MenuApi.getSubmenuFromId(menuId)
+          const items = menu.children
           comp.update({open:true, items})
         }
       }

@@ -1,6 +1,6 @@
 <ab-menu-item>
-    <p onclick="{performAction}" if="{!props.children}">{props.label}</p>
-    <p onclick="{openSubmenu}" onmouseleave="{closeSubmenu}" if="{props.children}">{props.label} &#x25b8;</p>
+    <p onclick="{performAction}" class="{props.disabled?'disabled':''}" if="{!props.children}">{props.label}</p>
+    <p onclick="{openSubmenu}" class="{props.disabled?'disabled':''}" onmouseleave="{closeSubmenu}" if="{props.children}">{props.label} &#x25b8;</p>
     <div class="sub-menu" if="{state.submenu}" onmouseenter="{keepOpen}" onmouseleave="{allowClose}">
         <ab-menu-item each="{item in props.children}"
                       label="{item.label}"
@@ -9,11 +9,13 @@
                       children="{item.children}"/>
     </div>
     <style>
+        .disabled {
+            color:lightgray;
+        }
         .sub-menu {
             position: fixed;
             background-color: white;
             border: 1px solid black;
-
         }
     </style>
     <script>
@@ -41,7 +43,9 @@
         },
         performAction(e) {
           let comp = cm.getComponent(e.srcElement)
-          cm.getApp().onMenuAction(comp.props)
+          if(!comp.disabled) {
+            cm.getApp().onMenuAction(comp.props)
+          }
         },
         openSubmenu(e) {
           // console.log('openSubmenu')
@@ -56,7 +60,7 @@
             if(!inside) {
               // console.log('closeSubmenu!')
                 let comp = cm.getComponent(e.srcElement)
-                comp.update({ submenu: null })
+                if(comp) comp.update({ submenu: null })
               }
             })
         },

@@ -17,11 +17,27 @@ export function onClick(ed:any) {
 }
 export function onMenuAction(menuEvent) {
     console.log('main sees a menu action for ',menuEvent.id)
-    if(menuEvent.id == 'TEST_NEWITEM') {
-        const app = menuEvent.app;
+    const app = menuEvent.app;
+    const menuApi = app.MenuApi
+    if(menuEvent.id === 'TEST_NEWITEM') {
         const newMenuItem = new MenuItem()
         newMenuItem.label = 'Newly Added Item'
-        const menuApi = app.MenuApi
-        menuApi.addMenuItem(app.model, "TEST", newMenuItem)
+        newMenuItem.id = 'TEST_ADDEDITEM'
+        menuApi.addMenuItem("main-OPTIONS-TEST", newMenuItem)
+    }
+    if(menuEvent.id === 'TEST_ADDEDITEM') {
+        menuApi.deleteMenuItem("main-OPTIONS-TEST", menuEvent.id)
+    }
+    if(menuEvent.id === 'TEST_DISABLE') {
+        menuApi.enableMenuItem("main-OPTIONS-TEST", 'TEST_NEWITEM', false)
+        menuApi.enableMenuItem("main-OPTIONS-TEST", 'TEST_ADDEDITEM', false)
+        menuApi.enableMenuItem("main-OPTIONS-TEST", 'TEST_DISABLE', false)
+        menuApi.enableMenuItem("main-OPTIONS-TEST", 'TEST_ENABLE', true)
+    }
+    if(menuEvent.id === 'TEST_ENABLE') {
+        menuApi.enableMenuItem("main-OPTIONS-TEST", 'TEST_NEWITEM', true)
+        menuApi.enableMenuItem("main-OPTIONS-TEST", 'TEST_ADDEDITEM', true)
+        menuApi.enableMenuItem("main-OPTIONS-TEST", 'TEST_DISABLE', true)
+        menuApi.enableMenuItem("main-OPTIONS-TEST", 'TEST_ENABLE', false)
     }
 }

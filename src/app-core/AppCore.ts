@@ -4,7 +4,7 @@ import {environment, check} from './EnvCheck'
 import {AppModel} from "./AppModel";
 
 import {setupMenu} from "../application/MenuDef"
-import * as MenuApi from "../application/MenuApi";
+import {MenuApi} from "../application/MenuApi";
 
 let StringParser, riot
 let getInfoMessageRecorder, InfoMessageRecorder
@@ -63,6 +63,8 @@ let keyListenerBind;
 export class AppCore {
     private appModel:AppModel = new AppModel()
     private rootPath:string;
+    private menuApi:MenuApi;
+    private activeMenu:any
     private currentActivity:any = null
     private history:HistoryRecord[] = []
     private pageMount:any // used only with riot
@@ -73,6 +75,7 @@ export class AppCore {
     private modelGateResolver:any
 
     constructor() {
+        this.menuApi = new MenuApi(this)
         this.modelGate = new Promise(resolve => {
             this.modelGateResolver = resolve
         })
@@ -87,6 +90,13 @@ export class AppCore {
     public get model() {
         return this.appModel
     }
+    public get MenuApi() {
+        return this.menuApi
+    }
+    public get MainApi() {
+        return mainApi
+    }
+
 
     public waitForModel() {
         return this.modelGate
@@ -143,6 +153,7 @@ export class AppCore {
         this.model.addSection('environment', environment)
 
         // Set up menus
+        this.model.addSection('menu', {})
         setupMenu(this).then(()=> {
             this.modelGateResolver()
         })
@@ -158,18 +169,18 @@ export class AppCore {
 
     }
 
-    public setupDesktopMenu(desktopMenu) {
-        for(let i=0; i<desktopMenu.length; i++) {
-            mainApi.addMenuItem(null, desktopMenu[i])
-        }
-        mainApi.realiseMenu()
+    // public setupDesktopMenu(desktopMenu) {
+    //     for(let i=0; i<desktopMenu.length; i++) {
+    //         mainApi.addMenuItem(null, desktopMenu[i])
+    //     }
+    //     mainApi.realiseMenu()
+    //
+    // }
 
+
+    public setActiveMenu(menuComp) {
+        this.activeMenu = menuComp
     }
-
-    public get MenuApi() {
-        return MenuApi
-    }
-
 
     public onMenuAction(props) {
 
@@ -177,6 +188,12 @@ export class AppCore {
             id: props.id,
             app: this
         }
+
+        if(this.activeMenu) {
+            this.activeMenu.update({open:false})
+        }
+
+
         // TODO: Handle anything global here
         // dispatch to current activity.  include app instance in props
         if(this.currentActivity) {

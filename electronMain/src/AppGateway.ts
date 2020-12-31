@@ -1,6 +1,6 @@
 
 import {readFileText} from "./FileAPI"
-import {addMenuItem, realiseMenu} from "./DesktopMenu";
+import {addMenuItem, enableMenuItem, deleteMenuItem, changeMenuItem, clearMenu, resetMenu, setToMenuBar} from "./DesktopMenu";
 //
 // function addMenuItem(a, item, target) {
 //     console.log('addMenuItem ', item, target)
@@ -9,8 +9,15 @@ import {addMenuItem, realiseMenu} from "./DesktopMenu";
 
 const exportedFunctions = {
     messageInit: () => { /*console.log('message init stub hit')*/ },
+
     addMenuItem,
-    realiseMenu,
+    enableMenuItem,
+    deleteMenuItem,
+    changeMenuItem,
+    clearMenu,
+    setToMenuBar,
+    resetMenu,
+
     readFileText
 }
 

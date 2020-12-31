@@ -651,7 +651,41 @@ working now with a change in the filtering.
 Now the question is, will my dynamic menu ops work
 satisfactorily with this arrangement?
 
+--
+###### 12/30
+Many refactoring trips later, here is the checklist:
+- √ Disabled state for desktop menu bar items
+- √ ◊ menuApi/ remove/change/clear for desktop
+- more feature support
+   - √? support sublabel (no effect on mac)
+   - √ ◊ tooltip (in place but not working)
+   - √ accelerator
+   - √ icon (need to rationalize and process)
+   - <s>visible?</s>
+   - √ checkbox
+   -  <s>radio </s>
 
+
+- menu bar
+ - [X] remove slots and use ids
+ - [X] apply placeholders if missing
+ 
+- Tools and indicators
+ - [ ] menuDef implementation
+ - [ ] pull into action-bar riot state items
+
+- Support riot rendering for 
+  - [ ] checkbox
+  - [ ] icon
+  - accelerator has no meaning on touch devices
+  - nor does tooltip
+  - not sure what the point of a sublabel is
+  
+---
+##### More about a tool / indicator
+ - label, icon:state
+ - data-state / can CSS select this.  
+ - state=name
 ---
 
 Whoohoo and then pick up the toolbar and indicators to round this

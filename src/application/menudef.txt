@@ -1,6 +1,7 @@
-
+DEFINE RESOURCE PATH "resources"
+DEFINE MENU "main"
 @Dm#APP!ThunderBolt         // App menu - name of app (mac only)
-    @Dm#APP_ABOUT:about,About ThunderBolt
+    @Dm#APP_ABOUT,About ThunderBolt
     @Dm#APP_CHECKUPDATE,Check for Update
     @Dm#--                                      // special notation for separator
     @Dm#APP_SERVICES:services,Services          // customary on Mac
@@ -11,7 +12,7 @@
     @Dm#--                                      // special notation for separator
     @Dm#APP_QUIT:quit,Quit                      // customary on Mac
 
-#FILE!File                 // file menu (desktop)
+#FILE:fileMenu!File                 // file menu (desktop)
     #FILE_NEW,New...
     #FILE_OPEN,Open...
     @m#FILE_CLOSE:close, Close       // on mac, close the current app window, don't quit app
@@ -25,25 +26,49 @@
     #EDIT_COPY:copy,Copy
     #EDIT_PASTE:paste,Paste
     @m#EDIT_PASTEMATCH:pasteAndMatchStyle,Paste and Match Style
-    @m#SUBMENU!Speech                               // Customary on mac only
-        @m#SPEECH_STARTSPEECH,Start Speaking
-        @m#SPEECH_STOPSPEECH,Stop Speaking
-    @m#ENDSUBMENU
+    @m>>SPEECH!Speech                               // Customary on mac only
+        @m#SPEECH_STARTSPEECH:startSpeaking,Start Speaking
+        @m#SPEECH_STOPSPEECH:stopSpeaking,Stop Speaking
+    @m<<
     #EDIT_DELETE:delete,Delete
     #EDIT_SELECTALL:selectall,Select All
 
 #OPTIONS!Options
-#FOO,Foo
-#BAR,Bar
-#BAR,Baz
-#SUBMENU!Options
+#FOO,Foo<icon=/Users/sohmert/tbd/sniff/app/images/socicons/heartType/0_smile.png>
+#BAR,Bar<tooltip=Now is the time>
+#BAZ,Baz
+>>OPTIONS!Options
 #OPTION_1,One
 #OPTION_2,Two
 #OPTION_3,Three
-#ENDSUBMENU
-#SUBMENU!Test
+<<
+>>TEST!Test
 #TEST_NEWITEM,Add Item
 #TEST_DISABLE,Disable Items
-#TEST_ENABLE,Enable Items
+#TEST_ENABLE,Enable Items<disabled,checked>[CmdOrCtrl+Shift+E]
+<<
 
+@D#VIEW:viewMenu!View
+    #VIEW_RELOAD:reload,Reload
+    #VIEW_FORCERELOAD:forceReload,Force Reload
+    #VIEW_TOGGLEDEVTOOLS:toggleDevTools,Toggle developer tools
+    #VIEW_TOGGLEFULLSCREEN:togglefullscreen,Toggle full screen
+    #VIEW_RESETZOOM:resetZoom,Actual Size
+    #VIEW_ZOOMIN:zoomIn,Zoom in
+    #VIEW_ZOOMOut:zoomOut,Zoom out
 
+@D#WINDOW:windowMenu!Window
+
+@D#HELP:help!Help
+
+DEFINE TOOLBAR "main"
+#TB1, 1<icon:state=whatever, state=bliss>[CmdOrCtrl+Shift+Alt+1]
+#TB2, 2<icon:state=whatever>[CmdOrCtrl+Shift+Alt+2]
+#TB3, 3<icon:state=whatever>[CmdOrCtrl+Shift+Alt+3]
+#TB4, 4<icon:state=whatever>[CmdOrCtrl+Shift+Alt+4]
+
+DEFINE INICATORS "main"
+#IN1, A<icon:state=whatever, state=bliss>
+#IN2, B<icon:state=whatever>
+#IN3, C<icon:state=whatever>
+#IN4, D<icon:state=whatever>

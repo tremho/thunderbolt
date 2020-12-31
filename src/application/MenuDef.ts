@@ -4,7 +4,7 @@
 // we need to use the file functions common to the API
 // (these come from Electron back end for desktop, and directly implemented in {N}, accessible from App-Core Wrapper)
 import {AppCore} from '../app-core/AppCore'
-import {MenuItem, addMenuItem} from "./MenuApi";
+import {MenuItem} from "./MenuApi";
 import {environment, check} from '../app-core/EnvCheck'
 
 // app menu is available to all, deskmenu only for desktop platforms
@@ -25,13 +25,68 @@ function readMenuDef(app:AppCore) {
 
 }
 
+let processing = ''
+let resourcePath = ''
+let menuName = ''
+let toolbarName = ''
+let indicatorName = ''
+
 function processMenuDef(app, defText) {
     const lines = defText.split('\n')
     lines.forEach(ln =>  {
-        processMenuLine(ln)
+        processDefinition(app, ln)
+        if(menuName) {
+            processMenuLine(ln)
+        }
+        else if(toolbarName) {
+            processToolLine(ln)
+        }
+        else if(indicatorName) {
+            processIndicatorLine(ln)
+        }
     })
-    // at this point we have parsed into a computable set of object maps we can translate into our model
-    commuteToModel(app)
+}
+
+function processDefinition(app, line) {
+    const tag = "DEFINE"
+    const rptag = "RESOURCE PATH"
+    const mntag = "MENU"
+    const tbtag = "TOOLBAR"
+    const intag = "INDICATORS"
+    if(line.indexOf(tag) === 0) {
+        if(menuName) {
+            // at this point we have parsed into a computable set of object maps we can translate into our model
+            commuteToModel(app)
+        }
+        menuName = toolbarName = indicatorName = resourcePath = ''
+        let proc = line.substring(tag.length+1)
+        if(proc.indexOf(rptag) !== -1) {
+            let qi = proc.indexOf('"')+1
+            if(qi) {
+                let qe = proc.indexOf('"', qi)
+                resourcePath = proc.substring(qi, qe)
+            }
+        } else if(proc.indexOf(mntag) !== -1) {
+            let qi = proc.indexOf('"')+1
+            if(qi) {
+                let qe = proc.indexOf('"', qi)
+                menuName = proc.substring(qi, qe)
+            }
+        } else if(proc.indexOf(tbtag) !== -1) {
+            let qi = proc.indexOf('"')+1
+            if(qi) {
+                let qe = proc.indexOf('"', qi)
+                toolbarName = proc.substring(qi, qe)
+            }
+        } else if(proc.indexOf(intag) !== -1) {
+            let qi = proc.indexOf('"')+1
+            if(qi) {
+                let qe = proc.indexOf('"', qi)
+                indicatorName = proc.substring(qi + 1, qe)
+            }
+        }
+
+    }
 }
 
 function processMenuLine(line) {
@@ -49,12 +104,17 @@ function processMenuLine(line) {
     let ti = line.indexOf('@')
     // check for #
     let hi = line.indexOf('#')
+    // check for >>
+    let sm = line.indexOf('>>')
+    let es = line.indexOf('<<')
     // check for :
     let ci = line.indexOf(':')
     // check for ,
     let li = line.indexOf(',')
     // check for !
     let bi = line.indexOf('!')
+    let di = line.indexOf('<')
+    let ai = line.indexOf('[')
 
     if(ti !== -1) {
         let ni
@@ -71,20 +131,46 @@ function processMenuLine(line) {
         if(xi === -1) xi = line.length;
         id = line.substring(hi+1,xi)
     }
+    if(sm !== -1) {
+        let xi = bi
+        if(xi === -1) xi = line.length;
+        id = line.substring(sm+2,xi)
+    }
 
     if( li === -1) li = bi
     if( li === -1) li = line.length;
     if(ci !==-1) role = line.substring(ci+1,li)
-    label = line.substring(li+1).trim()
+    let le = 0
+    if(di !== -1) le = di
+    if(!le && ai !== -1) le = ai
+    if(!le) le = line.length
+    label = line.substring(li+1, le).trim()
+
+    let mods = []
+    if(di !== -1) {
+        let edi = line.indexOf('>', di)
+        if(edi !== -1)  {
+            mods = line.substring(di+1, edi).split(',')
+        }
+    }
+    let accs = []
+    if(ai !== -1) {
+        let eai = line.indexOf(']', ai)
+        if(eai !== -1)  {
+            accs = line.substring(ai+1, eai).split(',')
+        }
+    }
 
 
-    if(bi !== -1 && id !== 'SUBMENU') {
+    if(bi !== -1 && sm === -1) {
         // this is a menubar label definition
         let mi = new MenuItem()
         mi.label = label
         mi.id = id
         mi.role = role
+        mi.accelerator = accs[0]
         mi.targetCode = target
+        applyMods(mi, mods)
         curMenu = mi.children = [] // start a new menu
         appmenu.push(mi)
         return;  // we're done for now
@@ -93,7 +179,7 @@ function processMenuLine(line) {
     // id, target, label, role
 
 
-    if(id) {
+    if(id || es !== -1) {
         if(id == '--') {
             // separator
             // (unique key and type identifier in either key or value)
@@ -105,16 +191,18 @@ function processMenuLine(line) {
         let mi = new MenuItem()
         mi.label = label;
         mi.role = role;
+        mi.accelerator = accs[0]
         mi.id = id;
         mi.targetCode = target
+        applyMods(mi, mods)
 
-        if (id === 'ENDSUBMENU') {
+        if (es !== -1) {
             // pop to previous submenu level
             curMenu = smstack.pop()
         } else {
             curMenu.push(mi)
         }
-        if (id === 'SUBMENU') {
+        if (sm !== -1) {
             //create a new submenu
             smstack.push(curMenu)
             curMenu = mi.children = []
@@ -122,6 +210,40 @@ function processMenuLine(line) {
     }
 
 }
+function applyMods(item:MenuItem, mods:string[]) {
+    mods.forEach(m => {
+        m = m.toLowerCase()
+        if(m === 'disabled') {
+            item.disabled = true
+        }
+        if(m === 'checked') {
+            item.type = 'checkbox'
+            item.checked = true
+        }
+        if(m === 'enabled') {
+            item.disabled = false
+        }
+        if(m === 'unchecked') {
+            item.type = 'checkbox'
+            item.checked = false
+        }
+        if(m.indexOf('icon') === 0) {
+            let e = m.indexOf('=')
+            item.icon = m.substring(e+1).trim()
+        }
+
+        // sublabel has no effect on mac
+        if(m.indexOf('sublabel') === 0) {
+            let e = m.indexOf('=')
+            item.sublabel = m.substring(e+1).trim()
+        }
+        if(m.indexOf('tooltip') === 0) {
+            let e = m.indexOf('=')
+            item.tooltip = m.substring(e+1).trim()
+        }
+    })
+}
+
 
 /* Take the parsed intermediate objects and translate them into our model format
 
@@ -157,20 +279,25 @@ function commuteToModel(app:AppCore) {
 
     const model = app.model;
     console.log('Make model out of this', appmenu);
-    const topItem = new MenuItem()
-    topItem.id = topItem.label = 'appmenu'
-    addMenuItem(model, 'appmenu', topItem)
+    // const topItem = new MenuItem()
+    // topItem.id = topItem.label = 'appmenu'
+    // app.MenuApi.addMenuItem('appmenu', topItem)
     for(let i=0; i<appmenu.length; i++) {
-        addMenuItem(model, 'appmenu', appmenu[i])
+        app.MenuApi.addMenuItem(menuName, appmenu[i])
     }
+}
 
-    // now the desktop items
-    app.setupDesktopMenu(appmenu)
+function processToolLine(line) {
+    console.log('tool line', line)
+}
 
+function processIndicatorLine(line) {
+    console.log('indicator line', line)
 }
 
 
 // Entry point called from AppCore::setupUIElements
 export function setupMenu(app:AppCore) {
+    app.MainApi.resetMenu()
     return readMenuDef(app)
 }

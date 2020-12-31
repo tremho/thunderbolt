@@ -2,11 +2,21 @@
     <div class="action-bar">
         <ab-backbutton if="{!props.noBack}"/>
         <p if="{props.noBack}"/>
-        <slot name="toolbar"/>
+        <action-toolbar>
+             <ab-toolbutton each="{item in state.tools}"
+                            text="{item.text}"
+                            />
+
+        </action-toolbar>
         <action-menu if="{props.menuId}" menu-id="{props.menuId}"/>
         <p if="{!props.menuId}"/>
         <ab-title title="{props.title}"/>
-        <slot name="indicators"/>
+        <indicator-bar>
+            <ab-toolbutton each="{item in state.indicators}"
+                           text="{item.text}"
+            />
+
+        </indicator-bar>
     </div>
     <style>
         .action-bar {
@@ -29,8 +39,20 @@
         bound: {},
         onBeforeMount (props, state) {
           cm = newCommon(this)
-          this.bound.text = props.text || this.root.tagName
           console.log(this.root.tagName, 'onBeforeMount', props, state, this.bound)
+          // todo: grab the app (model) toolbar buttons and indicators
+          state.tools = [
+            {text:'1'},
+            {text:'2'},
+            {text:'3'},
+            {text:'4'}
+          ]
+          state.indicators = [
+            {text:'A'},
+            {text:'B'},
+            {text:'C'},
+            {text:'D'},
+          ]
         },
         onMounted (props, state) {
           console.log(this.root.tagName, 'onMounted', props, state, this.bound)

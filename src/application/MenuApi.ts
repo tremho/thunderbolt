@@ -1,6 +1,7 @@
 
 import {AppModel} from "../app-core/AppModel";
 import {environment} from "../app-core/EnvCheck";
+import {AppCore} from "../app-core/AppCore";
 
 /*
 - addMenu       // to page; add means append or insert
@@ -22,165 +23,285 @@ export class MenuItem {
     public label:string
     public id:string
     public role?:string // parsed and used for desktop (per Electron)
-    public type?:string // submenu, separator; set to model
+    public type?:string // submenu, separator, checkbox, radio; set to model
     public targetCode?:string // used to apply to different platforms
     public disabled?:boolean // true if menu listing should be shown as disabled; no action
+    public checked?:boolean // true if box or radio type is in checked state
+    public sublabel:string // sublabel (set by mod, no effect on mac)
+    public tooltip:string // tooltip (set by mod)
+    public icon:string // icon path (set by mod)
+    public accelerator?:string // accelerator to apply
     public children?: MenuItem[] // found only in incoming submenus in parsing and setup
 }
 
+export class MenuApi {
+    private app:AppCore
+    private model:AppModel
 
-// -------------
-/**
- * Get the list of items belonging to a menu
- * @param menuId
- */
-export function listMenuItems(model:AppModel, menuId:string):MenuItem[] {
-    const items = model.getAtPath(menuId+'.$items')
-    return items
-}
-
-/**
- * Add or insert an item to a menu list
- * item may be a submenu with children
- * Will create the menu if it does not already exist
- *
- * @param {string} menuId Identifier of menu
- * @param {MenuItem }item entry
- * @param {number} [position] insert position, appends if undefined.
- * @param {number} [recurseChild] leave undefined; used in recursion
- */
-export function addMenuItem(model:AppModel, menuId:string, item:MenuItem, position?:number, recurseChild?:number ) {
-    let items:MenuItem[] = []
-    try {
-        items = model.getAtPath('menu-'+menuId+'.$items')
-    } catch(e) {
-        items = []
-        model.addSection('menu-'+menuId, {})
+    constructor(app) {
+        this.app = app
+        this.model = app.model
     }
 
-    if(limitTarget(item)) {
-        if (position === undefined) position = items.length;
-        items.splice(position, 0, item)
-        model.setAtPath('menu-' + menuId + '.$items', items, true)
-        model.setAtPath('menu-' + menuId + '.' + item.id, item, true)
-        if (item.children) {
-            let dirty = false
-            do {
-                for(let i=0; i<item.children.length; i++) {
-                    dirty = false;
-                    if(!limitTarget(item.children[i])) {
-                        item.children.splice(i,1)
-                        dirty = true
-                        break;
-                    }
+    /**
+     * Add or insert an item to a menu list
+     * item may be a submenu with children
+     * Will create the menu if it does not already exist
+     *
+     * @param {string} menuId Identifier of menu
+     * @param {MenuItem }item entry
+     * @param {number} [position] insert position, appends if undefined.
+     * @param {number} [recurseChild] leave undefined; used in recursion
+     */
+    addMenuItem(menuId:string, item:MenuItem, position?:number) {
+
+        let n = menuId.indexOf('-')
+        if(n === -1) n = menuId.length
+        let menuName = menuId.substring(0, n)
+        let topItem = this.model.getAtPath('menu.'+menuName)
+        if(!topItem) {
+            topItem = new MenuItem()
+            topItem.label = topItem.id = menuName
+            topItem.children = []
+            this.model.setAtPath('menu.'+menuName, topItem, true)
+        }
+        const parentItem = this.getSubmenuFromId(menuId)
+        const curMenu = parentItem.children
+
+        let kidclone = item.children && item.children.slice() // copy
+
+        if(this.limitTarget(item, "App")) {
+
+            this.limitChildren(item, "App")
+
+            if(position === undefined) {
+                curMenu.push(item)
+            } else {
+                curMenu.splice(position, 0, item)
+            }
+            if(parentItem) parentItem.children = curMenu
+        }
+        if(this.limitTarget(item, "Desktop")) {
+            item.children = kidclone
+            this.limitChildren(item, "Desktop")
+            this.app.MainApi.addMenuItem(menuId, item, position)
+        }
+
+        // update the full model
+        this.model.setAtPath('menu.'+menuName, topItem, true)
+    }
+
+    getSubmenuFromId(menuId:string) {
+        let n = menuId.indexOf('-')
+        if(n === -1) n = menuId.length
+        let menuName = menuId.substring(0, n)
+        let topItem = this.model.getAtPath('menu.'+menuName)
+        if(!topItem) {
+            console.error('menuId may not be complete ', menuId)
+            throw Error('MENU NOT FOUND: '+menuName)
+        }
+        const parts = menuId.split('-');
+        if(!topItem.children) topItem.children = []
+        let curMenu = topItem.children
+        let parentItem = topItem;
+        let pid = menuName
+        for(let i=1; i<parts.length; i++) {
+            pid = parts[i]
+            for (let c = 0; c < curMenu.length; c++) {
+                let cmitem = curMenu[c]
+                if (cmitem.id === pid) {
+                    parentItem = cmitem;
+                    curMenu = cmitem.children
+                    break;
                 }
-            } while(dirty)
-            const submenuId = menuId + '-' + item.id
-            for (let i = (recurseChild || 0); i < item.children.length; i++) {
-                if (item.children[i]) {
-                    addMenuItem(model, submenuId, item.children[i], undefined, i)
+            }
+        }
+        return parentItem
+    }
+
+    /**
+     * Returns true if item is targeted for this platform
+     * @param item The item
+     * @param dest names destination menu type: either 'App' or 'Desktop'
+     */
+    limitTarget(item:MenuItem, dest:string) {
+        const target = item.targetCode || ''
+        // limit to the target
+        let isAppBar = (target.indexOf('A') !== -1) // specifically app bar only
+        let isMenuBar = !isAppBar && (target.indexOf('D') !== -1) // goes to the menu bar, not the app menu
+        if(isMenuBar && dest === 'App') return false
+        if(isAppBar && dest === 'Desktop') return false
+        if(!isAppBar && !isMenuBar) {
+            isAppBar = isMenuBar = true; // mutually exclusive.  Neither targeted means put to both.
+        }
+        let included = true
+        for(let n=0; n<target.length; n++) {
+            let tc = target.charAt(n)
+            included = false
+            if(!tc.match(/[mwuai]/)) {
+                included = true; // if it's none of these, all are good
+            }
+            if(tc === 'm') {
+                included = environment.platform.name === 'darwin'
+                break;
+            }
+            if(tc === 'w') {
+                included = environment.platform.name === 'win32'
+                break;
+            }
+            if(tc === 'u') {
+                included = environment.platform.name === 'linux'
+                break;
+            }
+            if(tc === 'a') {
+                included = environment.platform.name === 'android'
+                break;
+            }
+            if(tc === 'i') {
+                included =  environment.platform.name === 'ios'
+                break;
+            }
+        }
+        return dest === 'Desktop' ? isMenuBar && included : isAppBar && included
+    }
+    limitChildren(item, dest) {
+        const children = item.children || []
+        let dirty = true;
+        while(dirty) {
+            dirty = false;
+            for (let i = 0; i < children.length; i++) {
+                const child = children[i]
+                if (!this.limitTarget(child, dest)) {
+                    children.splice(i, 1)
+                    dirty = true
+                    break;
                 }
             }
         }
     }
-}
-function limitTarget(item) {
-    const target = item.targetCode || ''
-    // limit to the target
-    let isAppBar = (target.indexOf('A') !== -1) // specifically app bar only
-    let isMenuBar = !isAppBar && (target.indexOf('D') !== -1) // goes to the menu bar, not the app menu
-    if(!isAppBar && !isMenuBar) {
-        isAppBar = true; // mutually exclusive.  Neither targeted means put to both.
+    /**
+     * Remove an item from a menu list
+     *
+     * @param menuId
+     * @param itemId
+     */
+    deleteMenuItem(menuId:string, itemId:string) {
+        let n = menuId.indexOf('-')
+        if(n === -1) n = menuId.length
+        let menuName = menuId.substring(0, n)
+        let topModel = this.model.getAtPath('menu.'+menuName)
+        if(!topModel) {
+            console.error('menuId may not be complete ', menuId)
+            throw Error('MENU NOT FOUND: '+menuName)
+        }
+
+        const parentItem = this.getSubmenuFromId(menuId)
+        const children = parentItem.children || []
+        for(let i=0; i<children.length; i++) {
+            if(children[i].id === itemId) {
+                children.splice(i,1)
+                break;
+            }
+        }
+        parentItem.children = children
+
+        // update the full model
+        this.model.setAtPath('menu.'+menuName, topModel, true)
+
+        this.app.MainApi.deleteMenuItem(menuId, itemId)
+
     }
-    let included = true
-    for(let n=0; n<target.length; n++) {
-        let tc = target.charAt(n)
-        included = false
-        if(!tc.match(/[mwuai]/)) {
-            included = true; // if it's none of these, all are good
+
+    /**
+     * Replace an item in the menu list
+     *
+     * @param menuId
+     * @param itemId
+     * @param updatedItem
+     */
+    changeMenuItem(menuId:string, itemId:string, updatedItem:MenuItem) {
+        let n = menuId.indexOf('-')
+        if(n === -1) n = menuId.length
+        let menuName = menuId.substring(0, n)
+        let topModel = this.model.getAtPath('menu.'+menuName)
+        if(!topModel) {
+            console.error('menuId may not be complete ', menuId)
+            throw Error('MENU NOT FOUND: '+menuName)
         }
-        if(tc === 'm') {
-            included = environment.platform.name === 'darwin'
-            break;
+
+        const parentItem = this.getSubmenuFromId(menuId)
+        const children = parentItem.children || []
+        for(let i=0; i<children.length; i++) {
+            if(children[i].id === itemId) {
+                children.splice(i,1, updatedItem)
+                break;
+            }
         }
-        if(tc === 'w') {
-            included = environment.platform.name === 'win32'
-            break;
-        }
-        if(tc === 'u') {
-            included = environment.platform.name === 'linux'
-            break;
-        }
-        if(tc === 'a') {
-            included = environment.platform.name === 'android'
-            break;
-        }
-        if(tc === 'i') {
-            included =  environment.platform.name === 'ios'
-            break;
-        }
+        parentItem.children = children
+
+        // update the full model
+        this.model.setAtPath('menu.'+menuName, topModel, true)
+
+        this.app.MainApi.changeMenuItem(menuId, itemId, updatedItem)
+
     }
-    return isAppBar && included
+
+    enableMenuItem(menuId:string, itemId:string, enabled: boolean) {
+        let n = menuId.indexOf('-')
+        if(n === -1) n = menuId.length
+        let menuName = menuId.substring(0, n)
+        let topModel = this.model.getAtPath('menu.'+menuName)
+        if(!topModel) {
+            console.error('menuId may not be complete ', menuId)
+            throw Error('MENU NOT FOUND: '+menuName)
+        }
+
+        const parentItem = this.getSubmenuFromId(menuId)
+        const children = parentItem.children || []
+        for(let i=0; i<children.length; i++) {
+            if(children[i].id === itemId) {
+                children[i].disabled = !enabled
+                break;
+            }
+        }
+        parentItem.children = children
+
+        // update the full model
+        this.model.setAtPath('menu.'+menuName, topModel, true)
+
+        this.app.MainApi.enableMenuItem(menuId, itemId, enabled)
+    }
+
+    /**
+     * Clear the menu of all its items
+     *
+     * @param menuId
+     */
+    clearMenu(menuId:string) {
+        let n = menuId.indexOf('-')
+        if(n === -1) n = menuId.length
+        let menuName = menuId.substring(0, n)
+        let topModel = this.model.getAtPath('menu.'+menuName)
+        if(!topModel) {
+            console.error('menuId may not be complete ', menuId)
+            throw Error('MENU NOT FOUND: '+menuName)
+        }
+
+        const parentItem = this.getSubmenuFromId(menuId)
+        parentItem.children = []
+
+        // update the full model
+        this.model.setAtPath('menu.'+menuName, topModel, true)
+
+        this.app.MainApi.clearMenu(menuId)
+    }
+
 
 }
 
-/**
- * Remove an item from a menu list
- *
- * @param menuId
- * @param itemId
- */
-export function deleteMenuItem(model:AppModel, menuId:string, itemId:string) {
-    const items = model.getAtPath('menu-'+menuId+'.$items')
-    let rid = -1
-    for(let i=0; i<items.length; i++) {
-        if(items.id === itemId) {
-            rid = i;
-            break;
-        }
-    }
-    if(rid !== -1) {
-        items.splice(rid, 1)
-    }
-    model.setAtPath('menu-'+menuId+'.$items', items)
-    model.setAtPath('menu-'+menuId+'.'+itemId, undefined)
-}
+// -------------
 
-/**
- * Replace an item in the menu list
- *
- * @param menuId
- * @param itemId
- * @param updatedItem
- */
-export function changeMenuItem(model:AppModel, menuId:string, itemId:string, updatedItem:MenuItem) {
-    const items = model.getAtPath(menuId+'.$items')
-    let rid = -1
-    for(let i=0; i<items.length; i++) {
-        if(items.id === itemId) {
-            rid = i;
-            break;
-        }
-    }
-    if(rid !== -1) {
-        items.splice(rid, 1, updatedItem)
-    }
-    model.setAtPath('menu-'+menuId+'.$items', items)
-    model.setAtPath('menu-'+menuId+'.'+itemId, undefined) // remove old first, in case id has changed.
-    model.setAtPath('menu-'+menuId+'.'+updatedItem.id, updatedItem)
-}
 
-/**
- * Clear the menu of all its items
- *
- * @param menuId
- */
-export function clearMenu(model:AppModel, menuId:string) {
-    const items = model.getAtPath(menuId+'.$items')
-    for(let i=0; i<items.length; i++) {
-        deleteMenuItem(model, menuId, items[i].id)
-    }
-}
 
 
 

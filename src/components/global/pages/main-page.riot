@@ -1,15 +1,5 @@
 <main-page>
-    <action-bar no-back="true" title="Main Page" menu-id="appmenu">
-        <action-toolbar slot="toolbar">
-            <ab-toolbutton text="TB1" action="onToolbutton"/>
-            <ab-toolbutton text="TB2" action="onToolbutton"/>
-        </action-toolbar>
-        <indicator-bar slot="indicators">
-            <ab-indicator label="1"/>
-            <ab-indicator label="2"/>
-            <ab-indicator label="3"/>
-        </indicator-bar>
-    </action-bar>
+    <action-bar no-back="true" title="Main Page" menu-id="main" toolbar-id="main" indicators-id="main"/>
     <simple-label bind="testValues.mainLabel as text" text="Hello"/>
     <simple-button text="Go to Next Page" action="onClick"/>
 
