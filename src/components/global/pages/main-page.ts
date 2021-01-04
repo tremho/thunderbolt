@@ -13,7 +13,15 @@ export function appStart(app:any) {
 export function onClick(ed:any) {
     console.log('We got clicked! ')
     ed.app.navigateToPage('next')
-
+}
+export function onIndTest(ed:any) {
+    console.log('toggle indicator')
+    let current = ed.app.model.getAtPath('indicator-IN3.state')
+    let next = (current !== 'on') ? 'on' : ''
+    ed.app.model.setAtPath('indicator-IN3.state',next,true)
+}
+export function onToolAction(toolEvent) {
+    console.log('tool action', toolEvent)
 }
 export function onMenuAction(menuEvent) {
     console.log('main sees a menu action for ',menuEvent.id)

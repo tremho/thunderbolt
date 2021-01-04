@@ -34,6 +34,19 @@ export class MenuItem {
     public children?: MenuItem[] // found only in incoming submenus in parsing and setup
 }
 
+export class IndicatorItem {
+    public id:string        // identifier
+    public label?:string    // optional label, appears over icon
+    public state:string     // current state.  will be echoed to data-state also.
+    public className?:string    // optional css classname to apply to container
+    public type?:string     // optional name of implementation object to be made by factory
+    public tooltip?:string  // optional tooltip string appears on hover (desktop only)
+    public icons?: {} // a map with states as keys to icon strings
+}
+export class ToolItem extends IndicatorItem{
+    public accelerator?:string // accelerator to apply
+}
+
 export class MenuApi {
     private app:AppCore
     private model:AppModel
@@ -296,6 +309,58 @@ export class MenuApi {
         this.app.MainApi.clearMenu(menuId)
     }
 
+    addToolbarItems(name:string, items:ToolItem[]) {
+        try {
+            this.app.model.setAtPath('toolbar.' + name, items)
+        } catch(e) {
+            const props = {}
+            props[name] = items
+            this.app.model.addSection('toolbar', props)
+        }
+        try {
+            items.forEach(tool => {
+                // can theoretically bind to any of these,
+                // but only 'state' is bound by the default implementation
+                const props = {
+                    state: tool.state,
+                    label: tool.label,
+                    className: tool.className,
+                    type:tool.type,
+                    tooltip:tool.tooltip
+                }
+                this.app.model.addSection('toolbar-'+tool.id,  props)
+            })
+        } catch(e) {
+            console.error(e)
+        }
+    }
+
+    addIndicatorItems(name:string, items:IndicatorItem[]) {
+        try {
+            this.app.model.setAtPath('indicators.' + name, items)
+        } catch(e) {
+            const props = {}
+            props[name] = items
+            this.app.model.addSection('indicators', props)
+        }
+        try {
+            items.forEach(indicator => {
+                // can theoretically bind to any of these,
+                // but only 'state' is bound by the default implementation
+                const props = {
+                    state: indicator.state,
+                    label: indicator.label,
+                    className: indicator.className,
+                    type:indicator.type,
+                    tooltip:indicator.tooltip
+                }
+                this.app.model.addSection('indicator-'+indicator.id,  props)
+            })
+        } catch(e) {
+            console.error(e)
+        }
+
+    }
 
 }
 

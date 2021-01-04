@@ -78,6 +78,10 @@ export class ComCommon extends NotCommon{
         }
     }
 
+    getCombinder(): ComBinder {
+        return this.comBinder
+    }
+
     /**
      * Call to wait for model to be ready before binding
      */

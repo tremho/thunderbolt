@@ -1,7 +1,8 @@
 <main-page>
-    <action-bar no-back="true" title="Main Page" menu-id="main" toolbar-id="main" indicators-id="main"/>
+    <action-bar no-back="true" text="Main Page" menu-id="main" toolbar-id="main" indicators-id="main"/>
     <simple-label bind="testValues.mainLabel as text" text="Hello"/>
     <simple-button text="Go to Next Page" action="onClick"/>
+    <simple-button text="Toggle Indicator" action="onIndTest"/>
 
     <script>
       import * as activity from './main-page'

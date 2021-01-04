@@ -10,7 +10,7 @@ const appRiotFile = path.join(components, 'global', 'main', 'app.riot')
 const appRiotTemplate =
 `
 <app>
-    <div bind="navigation.pageId"/>
+    <div bind="navigation.pageId">
 $$$PageList$$$
     </div>
     <style>

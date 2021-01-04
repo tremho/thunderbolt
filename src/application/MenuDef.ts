@@ -4,18 +4,15 @@
 // we need to use the file functions common to the API
 // (these come from Electron back end for desktop, and directly implemented in {N}, accessible from App-Core Wrapper)
 import {AppCore} from '../app-core/AppCore'
-import {MenuItem} from "./MenuApi";
+import {IndicatorItem, MenuItem, ToolItem} from "./MenuApi";
 import {environment, check} from '../app-core/EnvCheck'
 
-// app menu is available to all, deskmenu only for desktop platforms
-// let deskmenu:MenuItem[] = [];
 let appmenu:MenuItem[] = []
-let curMenu
+let appTools:ToolItem[] = []
+let appIndicators: IndicatorItem[] = []
 
-let submenus:any = {}
-let mbid
+let curMenu
 let smstack:any[] = []
-let nextSMID = 1
 
 // async
 function readMenuDef(app:AppCore) {
@@ -45,6 +42,7 @@ function processMenuDef(app, defText) {
             processIndicatorLine(ln)
         }
     })
+    commuteToModel(app) // pick up last one
 }
 
 function processDefinition(app, line) {
@@ -54,10 +52,8 @@ function processDefinition(app, line) {
     const tbtag = "TOOLBAR"
     const intag = "INDICATORS"
     if(line.indexOf(tag) === 0) {
-        if(menuName) {
-            // at this point we have parsed into a computable set of object maps we can translate into our model
-            commuteToModel(app)
-        }
+        // at this point we have parsed into a computable set of object maps we can translate into our model
+        commuteToModel(app)
         menuName = toolbarName = indicatorName = resourcePath = ''
         let proc = line.substring(tag.length+1)
         if(proc.indexOf(rptag) !== -1) {
@@ -82,7 +78,7 @@ function processDefinition(app, line) {
             let qi = proc.indexOf('"')+1
             if(qi) {
                 let qe = proc.indexOf('"', qi)
-                indicatorName = proc.substring(qi + 1, qe)
+                indicatorName = proc.substring(qi, qe)
             }
         }
 
@@ -278,26 +274,250 @@ menu-pageId-submenu-2
 function commuteToModel(app:AppCore) {
 
     const model = app.model;
-    console.log('Make model out of this', appmenu);
-    // const topItem = new MenuItem()
-    // topItem.id = topItem.label = 'appmenu'
-    // app.MenuApi.addMenuItem('appmenu', topItem)
-    for(let i=0; i<appmenu.length; i++) {
-        app.MenuApi.addMenuItem(menuName, appmenu[i])
+    if(menuName) {
+        for (let i = 0; i < appmenu.length; i++) {
+            app.MenuApi.addMenuItem(menuName, appmenu[i])
+        }
+    }
+    if(toolbarName) {
+        app.MenuApi.addToolbarItems(toolbarName, appTools)
+    }
+    if(indicatorName) {
+        app.MenuApi.addIndicatorItems(indicatorName, appIndicators)
     }
 }
 
 function processToolLine(line) {
+    line = line.trim()
     console.log('tool line', line)
+    let target = ''
+    let id = ''
+    let label = ''
+    // check for comment
+    let mi = line.indexOf('//')
+    if(mi !== -1) {
+        line = line.substring(0, mi).trim()
+    }
+    // check for @
+    let ti = line.indexOf('@')
+    // check for #
+    let hi = line.indexOf('#')
+    // check for ,
+    let li = line.indexOf(',')
+    // check for !
+    let bi = line.indexOf('!')
+    // check for mods
+    let di = line.indexOf('<')
+    // check for accelerators
+    let ai = line.indexOf('[')
+
+    if(ti !== -1) {
+        let ni
+        if(!ni && hi !== -1) ni = hi
+        if(!ni && li !== -1) ni = li
+        if(!ni && bi !== -1) ni = bi
+        target = line.substring(ti+1,ni)
+    }
+    if(hi !== -1) {
+        let xi = li
+        if(xi == -1) xi = bi
+        if(xi === -1) xi = line.length;
+        id = line.substring(hi+1,xi)
+    }
+
+    if( li === -1) li = bi
+    if( li === -1) li = line.length;
+    let le = 0
+    if(di !== -1) le = di
+    if(!le && ai !== -1) le = ai
+    if(!le) le = line.length
+    label = line.substring(li+1, le).trim()
+
+    let mods = []
+    if(di !== -1) {
+        let edi = line.indexOf('>', di)
+        if(edi !== -1)  {
+            mods = line.substring(di+1, edi).split(',')
+        } else {
+            console.error('Missing closing > in tool declaration '+ id)
+        }
+    }
+    let accs = []
+    if(ai !== -1) {
+        let eai = line.indexOf(']', ai)
+        if(eai !== -1)  {
+            accs = line.substring(ai+1, eai).split(',')
+        }
+    }
+
+    // target filter
+    if( id ) {
+        let item = new ToolItem()
+        item.label = label;
+        item.id = id;
+        mods.forEach(m => {
+            m = m.trim()
+            if (m === 'disabled') {
+                item.state = 'disabled'
+            }
+            if (m === 'enabled') {
+                item.state = ''
+            }
+            if (m.indexOf('state') === 0) {
+                let b = m.indexOf('=')
+                if (b !== -1) {
+                    item.state = m.substring(b + 1).trim()
+                }
+            }
+            if (m.indexOf('icon') === 0) {
+                let c = m.indexOf(':')
+                let e = m.indexOf('=')
+                if (e === -1) e = m.length
+                let state = 'default'
+                if (c !== -1) {
+                    state = m.substring(c + 1, e)
+                }
+                if (!item.icons) item.icons = {}
+                item.icons[state] = m.substring(e + 1).trim()
+            }
+            if (m.indexOf('tooltip') === 0) {
+                let b = m.indexOf('=')
+                if (b !== -1) {
+                    item.tooltip = m.substring(b + 1).trim()
+                }
+            }
+            if (m.indexOf('class') === 0) {
+                let b = m.indexOf('=')
+                if (b !== -1) {
+                    item.className = m.substring(b + 1).trim()
+                }
+            }
+            if (m.indexOf('type') === 0) {
+                let b = m.indexOf('=')
+                if (b !== -1) {
+                    item.type = m.substring(b + 1).trim()
+                }
+            }
+        })
+        item.accelerator = accs[0]
+        appTools.push(item)
+    }
 }
 
 function processIndicatorLine(line) {
     console.log('indicator line', line)
+    line = line.trim()
+    console.log('tool line', line)
+    let target = ''
+    let id = ''
+    let label = ''
+    // check for comment
+    let mi = line.indexOf('//')
+    if(mi !== -1) {
+        line = line.substring(0, mi).trim()
+    }
+    // check for @
+    let ti = line.indexOf('@')
+    // check for #
+    let hi = line.indexOf('#')
+    // check for ,
+    let li = line.indexOf(',')
+    // check for !
+    let bi = line.indexOf('!')
+    // check for mods
+    let di = line.indexOf('<')
+
+    if(ti !== -1) {
+        let ni
+        if(!ni && hi !== -1) ni = hi
+        if(!ni && li !== -1) ni = li
+        if(!ni && bi !== -1) ni = bi
+        target = line.substring(ti+1,ni)
+    }
+    if(hi !== -1) {
+        let xi = li
+        if(xi == -1) xi = bi
+        if(xi === -1) xi = line.length;
+        id = line.substring(hi+1,xi)
+    }
+
+    if( li === -1) li = bi
+    if( li === -1) li = line.length;
+    let le = 0
+    if(di !== -1) le = di
+    if(!le) le = line.length
+    label = line.substring(li+1, le).trim()
+
+    let mods = []
+    if(di !== -1) {
+        let edi = line.indexOf('>', di)
+        if(edi !== -1)  {
+            mods = line.substring(di+1, edi).split(',')
+        } else {
+            console.error('missing closing > in indicator declaration' +id)
+        }
+    }
+
+    // target filter
+    if( id ) {
+        let item = new IndicatorItem()
+        item.label = label;
+        item.id = id;
+        mods.forEach(m => {
+            m = m.trim()
+            if (m === 'disabled') {
+                item.state = 'disabled'
+            }
+            if (m === 'enabled') {
+                item.state = ''
+            }
+            if (m.indexOf('state') === 0) {
+                let b = m.indexOf('=')
+                if (b !== -1) {
+                    item.state = m.substring(b + 1).trim()
+                }
+            }
+            if (m.indexOf('icon') === 0) {
+                let c = m.indexOf(':')
+                let e = m.indexOf('=')
+                if (e === -1) e = m.length
+                let state = 'default'
+                if (c !== -1) {
+                    state = m.substring(c + 1, e)
+                }
+                if(!item.icons) item.icons = {}
+                item.icons[state] = m.substring(e + 1).trim()
+            }
+            if (m.indexOf('tooltip') === 0) {
+                let b = m.indexOf('=')
+                if (b !== -1) {
+                    item.tooltip = m.substring(b + 1).trim()
+                }
+            }
+            if (m.indexOf('class') === 0) {
+                let b = m.indexOf('=')
+                if (b !== -1) {
+                    item.className = m.substring(b + 1).trim()
+                }
+            }
+            if (m.indexOf('type') === 0) {
+                let b = m.indexOf('=')
+                if (b !== -1) {
+                    item.type = m.substring(b + 1).trim()
+                }
+            }
+        })
+        appIndicators.push(item)
+    }
 }
 
 
 // Entry point called from AppCore::setupUIElements
 export function setupMenu(app:AppCore) {
+    appmenu = []
+    appTools = []
+    appIndicators = []
+    smstack = []
     app.MainApi.resetMenu()
     return readMenuDef(app)
 }

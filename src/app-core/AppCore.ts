@@ -18,6 +18,12 @@ if(!check.mobile) {
     } catch(e) {}
 }
 
+// TODO: dynamically build this mapping with a config or an enumerating tool.
+import {ExampleIndicator} from "../extension/ExampleIndicator"
+const extensionTypes = {
+    Example: ExampleIndicator
+}
+
 let imrSingleton
 if(getInfoMessageRecorder) {
     imrSingleton = getInfoMessageRecorder()
@@ -96,7 +102,6 @@ export class AppCore {
     public get MainApi() {
         return mainApi
     }
-
 
     public waitForModel() {
         return this.modelGate
@@ -202,6 +207,22 @@ export class AppCore {
             }
         }
     }
+    public onToolAction(props) {
+
+        const menuEvent = {
+            id: props.id,
+            app: this
+        }
+
+        // TODO: Handle anything global here
+        // dispatch to current activity.  include app instance in props
+        if(this.currentActivity) {
+            if(typeof this.currentActivity.onToolAction === 'function') {
+                this.currentActivity.onToolAction(menuEvent)
+            }
+        }
+    }
+
 
     // TODO: make part of a more defined util section
     public makeStringParser(string:string) {
@@ -309,7 +330,7 @@ export class AppCore {
      * @param name
      * @param domEvent
      */
-    public callEventHandler(name:string, tag:string, platEvent:any) {
+    public callEventHandler(tag:string, platEvent:any) {
         const act = this.currentActivity;
         const ed = new EventData()
         ed.app = this
@@ -317,6 +338,7 @@ export class AppCore {
         ed.sourceComponent = this.getComponent(platEvent.target as HTMLElement)
         ed.eventType = (platEvent as Event).type
         ed.tag = tag
+        let name = ed.sourceComponent.state[tag]
         if(typeof act[name] === 'function') {
             act[name](ed)
         } else {
@@ -347,6 +369,7 @@ export class AppCore {
     }
 
     // ----------------- File API access --------------------------
+    // todo: Put into separate API space
 
     readFileText(filePath) {
         if(!check.mobile) {
@@ -355,6 +378,14 @@ export class AppCore {
             throw Error("File APIs not implemented for mobile yet")
         }
     }
+    // ------- Extension for indicators / tools
+    createExtensionType(name:string) {
+        const EType = extensionTypes[name]
+        if(EType) {
+            return new EType()
+        }
+    }
+
 
 }
 

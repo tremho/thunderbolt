@@ -9,11 +9,11 @@
       import {newCommon} from '../../../app-core/ComCommon'
       let cm;
       export default {
-        state: {},
-        bound: {},
         onBeforeMount(props, state) {
+          this.bound = new Object()
           cm = newCommon(this)
           this.bound.text = props.text || this.root.tagName // reset to props default
+          state.action = props.action
         },
         onMounted(props, state) {
           // console.log(this.root.tagName, 'onMounted', props, state)
@@ -32,7 +32,7 @@
         },
         onClick(e) {
           // call via binding context
-          cm.getApp().callEventHandler('onClick', 'action', e)
+          cm.getApp().callEventHandler('action', e)
         }
 
       }

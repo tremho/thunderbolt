@@ -1,6 +1,6 @@
 
 <app>
-    <div bind="navigation.pageId"/>
+    <div bind="navigation.pageId">
         <main-page if="{bound.pageId === 'main'}"/>
         <next-page if="{bound.pageId === 'next'}"/>
     </div>

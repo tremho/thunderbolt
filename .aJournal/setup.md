@@ -671,12 +671,10 @@ Many refactoring trips later, here is the checklist:
  - [X] apply placeholders if missing
  
 - Tools and indicators
- - [ ] menuDef implementation
- - [ ] pull into action-bar riot state items
+ - [X] menuDef implementation
+ - [X] pull into action-bar riot state items
 
-- Support riot rendering for 
-  - [ ] checkbox
-  - [ ] icon
+- prep for riot
   - accelerator has no meaning on touch devices
   - nor does tooltip
   - not sure what the point of a sublabel is
@@ -687,6 +685,27 @@ Many refactoring trips later, here is the checklist:
  - data-state / can CSS select this.  
  - state=name
 ---
+##### wrap it up
+- riot rendering
+   - [X] menu item checkbox
+   - [X] menu item icon
+   - [X]  indicator/tool riot base
+      - √ _Icons and state / layout_
+      - ◊ _Still need to do tools_
+     - √ switch icon and date-state on state change
+     - √ layering of icon and label
+     - ◊ applying class
+     - ◊ supporting tooltip
+     - ◊ using type instances.
+   - [ ] indicator-<id> model binding
+     
+
+- [ ] Document the action bar and its definition file
+- [ ] Move from "application" folder
+
+- [ ] work on resource prep process and tools
+
+---
 
 Whoohoo and then pick up the toolbar and indicators to round this
 fun time out. Just in time for the new year!
@@ -695,7 +714,11 @@ frankly, not expecting anything material on a 'ready to try for
 a real-life scenario' candidate until sometime during the
 Biden Administration.
 
-    
+----------
+
+See more planning in [construction](./construction.md)
+See workflow continuation in [setup](./setup.md)
+
     
 
 

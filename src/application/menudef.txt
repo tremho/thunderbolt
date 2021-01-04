@@ -62,13 +62,13 @@ DEFINE MENU "main"
 @D#HELP:help!Help
 
 DEFINE TOOLBAR "main"
-#TB1, 1<icon:state=whatever, state=bliss>[CmdOrCtrl+Shift+Alt+1]
-#TB2, 2<icon:state=whatever>[CmdOrCtrl+Shift+Alt+2]
-#TB3, 3<icon:state=whatever>[CmdOrCtrl+Shift+Alt+3]
-#TB4, 4<icon:state=whatever>[CmdOrCtrl+Shift+Alt+4]
+#TB1, 1<state=on,icon=whatever.png,icon:active=active.png,icon:disabled=disabled.png>[CmdOrCtrl+Shift+Alt+1]
+#TB2, 2<class=myclassyclassclass,icon=whatever.png,icon:active=active.png,icon:disabled=disabled.png,state=bliss>[CmdOrCtrl+Shift+Alt+2]
+#TB3, 3<type=Example,tooltip=Far Out>[CmdOrCtrl+Shift+Alt+3]
+#TB4, 4<disabled>[CmdOrCtrl+Shift+Alt+4]
 
-DEFINE INICATORS "main"
-#IN1, A<icon:state=whatever, state=bliss>
-#IN2, B<icon:state=whatever>
-#IN3, C<icon:state=whatever>
-#IN4, D<icon:state=whatever>
+DEFINE INDICATORS "main"
+#IN1, A<state=on>
+#IN2, B<class=myclassyclassclass>
+#IN3, C<type=Example,tooltip=Cooliomente,state=on>
+#IN4, D<state=foobar,icon:foobar=foobar.png>
