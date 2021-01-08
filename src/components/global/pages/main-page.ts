@@ -8,6 +8,8 @@ export function appStart(app:any) {
     setTimeout(() => {
         model.setAtPath('testValues.mainLabel', 'Main Activity after a second!')
     }, 1000)
+
+    setMenuHandlers(app)
 }
 
 export function onClick(ed:any) {
@@ -48,4 +50,20 @@ export function onMenuAction(menuEvent) {
         menuApi.enableMenuItem("main-OPTIONS-TEST", 'TEST_DISABLE', true)
         menuApi.enableMenuItem("main-OPTIONS-TEST", 'TEST_ENABLE', false)
     }
+
+}
+
+function setMenuHandlers(app) {
+    app.registerMenuHandler('VERTICAL_STACK', (menuEvent) => {
+        app.navigateToPage('stack-test', {type:'vertical'})
+    })
+    app.registerMenuHandler('HORIZONTAL_STACK', (menuEvent) => {
+        app.navigateToPage('stack-test', {type:'horizontal'})
+    })
+    app.registerMenuHandler('VERTICAL_STACK_ALIGNED', (menuEvent) => {
+        app.navigateToPage('stack-test', {type:'vertical-spaced'})
+    })
+    app.registerMenuHandler('HORIZONTAL_STACK_ALIGNED', (menuEvent) => {
+        app.navigateToPage('stack-test', {type:'horizontal-spaced'})
+    })
 }

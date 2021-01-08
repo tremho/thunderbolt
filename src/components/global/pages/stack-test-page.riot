@@ -1,0 +1,57 @@
+<stack-test-page>
+    <action-bar text="Stack Layout Test" menu-id="main"/>
+
+    <simple-label text="The page-id is {bound.pageId}"/>
+    <simple-label text="The type is {bound.context.type}"/>
+
+    <div if="{bound.context.type === 'vertical'}">
+        <simple-label text="Test of vertical stack layout"/>
+
+        <fill-space height="2rem"/>
+        <stack-layout>
+            <simple-label text="Hello"/>
+            <simple-label text="This"/>
+            <simple-label text="is"/>
+            <simple-label text="a"/>
+            <simple-label text="Stack"/>
+        </stack-layout>
+    </div>
+
+    <div if="{bound.context.type === 'horizontal'}">
+        <simple-label text="Test of horizontal stack layout"/>
+        <stack-layout orientation="horizontal">
+            <simple-label text="Hello"/>
+            <simple-label text="This"/>
+            <simple-label text="is"/>
+            <simple-label text="a"/>
+            <simple-label text="Stack"/>
+        </stack-layout>
+    </div>
+    <div if="{bound.context.type === 'vertical-spaced'}">
+        <simple-label text="Test of vertical stack layout with independent alignments"/>
+        <stack-layout orientation="vertical">
+            <simple-label text="Hello" align-text="left"/>
+            <simple-label text="This" align-text="center"/>
+            <simple-label text="is" align-text="right"/>
+            <simple-label text="a" align-text="center"/>
+            <simple-label text="Stack" align-text="center"/>
+        </stack-layout>
+    </div>
+    <div if="{bound.context.type === 'horizontal-spaced'}">
+        <simple-label text="Test of horizontal stack layout with independent alignments"/>
+        <stack-layout orientation="horizontal">
+            <simple-label text="Hello" height="2rem"/>
+            <simple-label text="This" align-text="center"/>
+            <simple-label text="is" align-text="right"/>
+            <simple-label text="a" align-text="center"/>
+            <simple-label text="Stack" align-text="center"/>
+        </stack-layout>
+    </div>
+
+    <script>
+      import pageComp from '../../../app-core/PageComp'
+      import * as activity from './stack-test-page'
+      pageComp.activity = activity
+      export default pageComp
+    </script>
+</stack-test-page>

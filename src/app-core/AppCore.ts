@@ -6,7 +6,7 @@ import {AppModel} from "./AppModel";
 import {setupMenu} from "../application/MenuDef"
 import {MenuApi} from "../application/MenuApi";
 
-let StringParser, riot
+let StringParser, riot, ComBinder
 let getInfoMessageRecorder, InfoMessageRecorder
 if(!check.mobile) {
     try {
@@ -15,6 +15,7 @@ if(!check.mobile) {
         getInfoMessageRecorder = Imr.getInfoMessageRecorder;
         InfoMessageRecorder = Imr.InfoMessageRecorder
         riot = require('riot')
+        ComBinder = require('./ComBinder').ComBinder
     } catch(e) {}
 }
 
@@ -73,6 +74,7 @@ export class AppCore {
     private activeMenu:any
     private currentActivity:any = null
     private history:HistoryRecord[] = []
+    private menuHandlers:any = {}
     private pageMount:any // used only with riot
     // the gate items below are used only in the mobile version
     private componentGate:Promise<void>
@@ -150,7 +152,7 @@ export class AppCore {
                 })
             })
         }
-        this.model.addSection('navigation', {pageId: ''})
+        this.model.addSection('navigation', {pageId: '', context:{}})
 
 
         // Set environment items
@@ -206,6 +208,10 @@ export class AppCore {
                 this.currentActivity.onMenuAction(menuEvent)
             }
         }
+        const handler = this.menuHandlers[props.id]
+        if(handler) {
+            handler(menuEvent)
+        }
     }
     public onToolAction(props) {
 
@@ -213,14 +219,27 @@ export class AppCore {
             id: props.id,
             app: this
         }
-
-        // TODO: Handle anything global here
         // dispatch to current activity.  include app instance in props
         if(this.currentActivity) {
             if(typeof this.currentActivity.onToolAction === 'function') {
                 this.currentActivity.onToolAction(menuEvent)
             }
         }
+        const handler = this.menuHandlers[props.id]
+        if(handler) {
+            handler(menuEvent)
+        }
+    }
+
+    /**
+     * Register a global-scope handler for a menu or a tool action
+     * or pass null instead of the handler function to clear it
+     * @param menuId  menu action identifier
+     * @param handler function to handle menu event
+     */
+    registerMenuHandler(menuId, handler) {
+        if(handler) this.menuHandlers[menuId] = handler
+        else delete this.menuHandlers[menuId]
     }
 
 
@@ -263,7 +282,9 @@ export class AppCore {
 
         // set the page in the model.  For Riot, this forces the page to change on update
         // for mobile, we need to do that through native navigation, but we still want the model to be the same
-        this.model.setAtPath('navigation.pageId', pageId)
+        this.model.setAtPath('navigation.context', context || {})
+        // this next line is what actually triggers the display of the page
+        this.model.setAtPath('navigation.pageId', pageId || '', true)
 
         // note that this isn't used on the mobile side, but we record it anyway.
         // this may be useful later if we have any history-related functionality in common.
@@ -292,8 +313,10 @@ export class AppCore {
             // not sure what effect this has on back history, since there's nothing passed for that.
 
         } else {
-            const activity = findPageActivity(pageId)
-            this.startPageLogic(pageId, activity)
+            const pageComponent = findPageComponent(pageId)
+
+            const activity = pageComponent.activity;
+            this.startPageLogic(pageId, activity, context)
         }
     }
 
@@ -309,11 +332,17 @@ export class AppCore {
         this.currentActivity = activity;
 
         if(!check.mobile) {
+
+            activity.onBeforeUpdate = (props, state) => {
+
+                console.log('Announcement that the page will update', this, activity, props, state)
+
+            }
+
             this.attachPageKeyListener()
         }
 
         activity.appStart(this, context)
-
     }
 
     public navigateBack() {
@@ -410,12 +439,12 @@ function getComponent(el) {
         return null;
     }
 }
-function findPageActivity(pageId) {
+function findPageComponent(pageId) {
     const tag = pageId+'-page'
     const el = document.getElementById('root')
     const appComp = getComponent(el)
     const pageCompEl = appComp.$$(tag)[0]
     const pageComp = getComponent(pageCompEl)
     // console.log('found page', pageComp)
-    return pageComp.activity
+    return pageComp
 }

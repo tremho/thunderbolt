@@ -48,6 +48,24 @@ DEFINE MENU "main"
 #TEST_ENABLE,Enable Items<disabled,checked>[CmdOrCtrl+Shift+E]
 <<
 
+#Tests!Tests
+>>LAYOUT,Layout Tests
+#VERTICAL_STACK,Vertical Stack[V]
+#HORIZONTAL_STACK,Horizontal Stack[H]
+#VERTICAL_STACK_ALIGNED,Vertical, with alignments[Alt+V]
+#HORIZONTAL_STACK_ALIGNED,Horizontal, with alignments[Alt+H]
+// #NESTED_STACK,Nested Stacks
+#--
+#VERTICAL_FLEX,Vertical Flex
+#HORIZONTAL_FLEX,Horizontal Flex
+#NESTED_FLEX,Nested Flex
+#--
+#GRID_1,Grid Example One
+#GRID_2,Grid Example Two
+#GRID_3,Grid Example Three
+<<
+
+
 @D#VIEW:viewMenu!View
     #VIEW_RELOAD:reload,Reload
     #VIEW_FORCERELOAD:forceReload,Force Reload
