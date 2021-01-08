@@ -316,6 +316,7 @@ export class AppCore {
             const pageComponent = findPageComponent(pageId)
 
             const activity = pageComponent.activity;
+            activity.context = context;
             this.startPageLogic(pageId, activity, context)
         }
     }

@@ -101,12 +101,16 @@ updated the way it should
 though. Only vertical stack is correct, so 1 of 4.
   
 ---
+Mid-day 1/8:
+- All looks good.  back action and context behaving well.
+- Found bug in simple-label can't figure.
+made simple-slot as an alternative label type.
 
+- New objectives to put on list somewhere:
+  - __BaseComp__ common handling for components
+  - Bind to `state` instead of `bound`
 
-
-
-
-
+-----  
 
 ###### Implement logging
 

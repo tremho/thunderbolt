@@ -2,7 +2,9 @@
     <action-bar text="Stack Layout Test" menu-id="main"/>
 
     <simple-label text="The page-id is {bound.pageId}"/>
-    <simple-label text="The type is {bound.context.type}"/>
+   <!--  <span> The type is {bound.context.type}</span><br/> !-- weird, but simple-label doesn't update on second instance -->
+    <simple-slot>The type is {bound.context.type}</simple-slot>
+
 
     <div if="{bound.context.type === 'vertical'}">
         <simple-label text="Test of vertical stack layout"/>

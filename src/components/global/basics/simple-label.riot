@@ -22,6 +22,7 @@
               cm.bindComponent()
             },
             onBeforeUpdate(props, state) {
+              this.bound.text = this.bound.text || props.text
               // console.log(this.root.tagName, 'onBeforeUpdate', props, state, this.bound)
             },
             onUpdated(props, state) {
