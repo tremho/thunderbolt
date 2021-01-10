@@ -114,6 +114,9 @@ made simple-slot as an alternative label type.
 
 ###### Implement logging
 
+- [ ] outline plan at [Logging Overview](./logoverview.md)
+
+
 ##### II - 1/31/21
 ###### Establish separation plan
 
