@@ -1,6 +1,6 @@
 .DS_Store
 .idea/
-,nyc_output/
+.nyc_output/
 build/
 dist/
 node_modules/
