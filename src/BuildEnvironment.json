@@ -1,0 +1,14 @@
+
+{
+  "framework": {
+    "name": "ThunderBolt/Desktop",
+    "version": "0.0.0"
+  },
+  "platform": {
+    "name": "darwin",
+    "version": "19.6.0"
+  },
+  "node": {
+    "version": "12.18.3"
+  }
+}
