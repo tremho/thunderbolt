@@ -5,7 +5,7 @@ Follows up from [setup](./setup.md)
 
 See plan ideas in [construction](./construction.md)
 
-##### I - 1/15/21
+##### I - 1/20/21
 ###### Finish out action bar work
 - Indicators and tools
     - [X] apply class
@@ -116,23 +116,72 @@ made simple-slot as an alternative label type.
 
 - [ ] outline plan at [Logging Overview](./logoverview.md)
 
+----
+I'm at this point now, on 2/10/21.
 
-##### II - 1/31/21
+Review and wrap up fine points before travel to Pueblo on 2/13
+
+###### Wrap up before travel plan
+- Make an aspirational plan (design) for how an app should be constructed
+using this framework [App Construction Plan](./app-construction.md)
+
+- Make a TB Dashboard design plan that helps bind together the
+_Projectus_ inspired features, checkpoints, and tools.
+  
+- Make a SWAG approach schedule for those parts to incorporate
+and superceed the following Part II and Part III schedule notes.
+  
+- Don't get too far ahead of yourself without doing a sanity chack
+on mobile execution.  This is likely to have many shortcomings because
+it hasn't been addressed in a while, but let's take some time to at
+least enumerate these issues before the gap gets too wide.
+
+  
+-----
+
+Some other things to note in this section:
+- Unit Measure and format
+- gen-i18n
+
+##### II - <s>1/31/21</s> 2/28/21
+Making app space
 ###### Establish separation plan
+This means making the framework external to the projects that use it.
 
 ###### Convert to full SCSS support
+App project supplies its own CSS
+We also need framework CSS baselines and a profile theme structure.
 
-###### Create API extension support  
+Somewhere in here contact Jessica for some style work.
+
+###### Create API extension support
+App project supplies API namespace code for app-core or back-core
+contexts.  Each is accessible via framework API re namespace.
+
 
 ##### III - 2/28/21
+App lifecycle tool support
 
 ###### Implement documentation and doc tests
+Api generation paths
+Article doc space
+Doc Assets folder
+UML use cases and sequences
+InchJS and DocumentationJS, etc via framework
+ts-clear-classdoc via framework
 
 ###### Devise component testing process
+Patterns for generic app-side unit test
+Patterns for component unit test
+Pattern for component integration test / HumanTest integration
 
 ###### Implement resources and prep tooling
+Establish process by which resources can be processed and integrated.
+Examples include menu images, for instance.
 
 ###### Implement localization and core-level support
+App project support for local i18n tables.  Generally integrated
+@tag:default syntax in formatted strings, menus, etc.
 
 ##### IV - 3/20/21
 
@@ -143,11 +192,17 @@ made simple-slot as an alternative label type.
 ###### Framework extension release (as .gz npm)
 ###### Support for using extensions
 
+
+##### Consider TB framework release 4/1
+
+--------------
 --------------
 
 ### Alcaeus parallel plan
+Prove the framework is ready by creating an app with it, and also
+to make something that can be released and evolved.
 
-##### First TB project start 2/1
+##### First TB project start <s>2/1</s> 3/1
 ###### Follow pre-proto design w/smart changes
 
 ###### Standalone features  3/15
@@ -155,8 +210,7 @@ made simple-slot as an alternative label type.
 - versioning and annotation
 - release (to folder) and release notes
 
-###### Commercial features
---- 4/15
+###### Commercial features  4/15
 - login
 - cloud sync
   
@@ -169,3 +223,4 @@ made simple-slot as an alternative label type.
 - messages and forums  
 - release to cloud
 - Radio Alcaeus
+

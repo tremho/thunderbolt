@@ -49,9 +49,14 @@ function cleanFolder(folderPath) {
 }
 
 // tsc has already put js files in build directory, so don't clean it.
+
 const root = path.resolve(__dirname, '../../') // back out of buildcycle/before-bundle
 const srcPath = path.resolve(root, 'src')
 const buildPath = path.resolve(root, 'build')
 const distPath = path.resolve(root, 'dist')
-copyFolderRecursiveSync(path.join(srcPath, 'components'), buildPath)
+
+// copyFileSync(path.join(srcPath, 'app-core','logConfig.json'),
+//              path.join(buildPath, 'app-core','logConfig.json'))
+
+// copyFolderRecursiveSync(path.join(srcPath, 'components'), buildPath)
 console.log('copy complete')

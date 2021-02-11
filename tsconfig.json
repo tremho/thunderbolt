@@ -11,10 +11,12 @@
       "es2015.proxy"
     ]
   },
+  "exclude": [
+    "./node_modules/"
+  ],
   "include": [
-    "./src/**/*",
-    "./appSource/**/*",
-    "./test/**/*"
-
+    "./src/*.js",
+    "./src/**/*.ts",
+    "./test/**/*.test.ts"
   ]
 }
