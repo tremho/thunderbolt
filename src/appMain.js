@@ -1,6 +1,5 @@
 
 import * as riot from 'riot'
-// import App from './scratch-app.riot'
 import App from './components/global/main/app.riot'
 import {AppCore, setTheApp} from './app-core/AppCore'
 import registerGlobalComponents from './register-global-components'

@@ -1,0 +1,4 @@
+#!/bin/zsh
+
+p=`pwd`; cd ~/tbd/thunderbolt/electronMain; npm run start $p $1 $2 $3 $4
+

@@ -17,4 +17,8 @@ export function readFileText(filename) {
         return ''
     }
 }
+export function fileExists(filename) {
+    let fpath = path.normalize(path.join(__dirname, '..','..','..','..',filename))
+    return fs.existsSync(fpath)
+}
 

@@ -1,6 +1,6 @@
 {
   "name": "thunderbolt",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Project development management tool",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "clean build": "npm run clean && npm run build",
     "prepublishOnly": "npm test",
     "clean run desktop": "npm run clean; npm run \"run desktop\"",
-    "run electron": "c=`pwd`; bcx before-launch && cd electronMain && npm run start && cd $c; bcx after-launch",
+    "run electron": "c=`pwd`; bcx before-launch && cd electronMain && npm run start /Users/sohmert/tbd/tb_hello1 && cd $c; bcx after-launch",
     "run desktop": "npm run build && npm run bundle && npm run \"run electron\"",
     "build android": "npm run compile && bcx before-mobile && cd NativeScript/ThunderBolt-NS && tns build android",
     "run android": "npm run compile && bcx before-mobile && cd NativeScript/ThunderBolt-NS && tns run android --device=medium",

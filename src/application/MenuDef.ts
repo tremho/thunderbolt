@@ -16,9 +16,12 @@ let smstack:any[] = []
 
 // async
 function readMenuDef(app:AppCore) {
-    return app.readFileText('src/application/menudef.txt').then(defText => {
-        return processMenuDef(app, defText)
-    })
+    const menuDef = 'src/application/menudef.txt'
+    if(app.fileExists(menuDef)) {
+        return app.readFileText(menuDef).then(defText => {
+            return processMenuDef(app, defText)
+        })
+    }
 
 }
 

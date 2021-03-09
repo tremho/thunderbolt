@@ -8,6 +8,7 @@ import {MenuApi} from "../application/MenuApi";
 
 let StringParser, riot, ComBinder
 let getInfoMessageRecorder, InfoMessageRecorder
+let coreApp
 if(!check.mobile) {
     try {
         StringParser = require('../general/StringParser')
@@ -17,6 +18,10 @@ if(!check.mobile) {
         riot = require('riot')
         ComBinder = require('./ComBinder').ComBinder
     } catch(e) {}
+
+    try {
+        coreApp = require('../core/app/main')
+    }catch(e) {}
 }
 
 // TODO: dynamically build this mapping with a config or an enumerating tool.
@@ -165,9 +170,10 @@ export class AppCore {
             this.modelGateResolver()
         })
 
+        if(coreApp) coreApp.setupModel(this.model)
         // Set up our app display
-        // TODO: remove when done with initial setup testing
-        this.model.addSection('testValues', {mainLabel: 'Hello, World! This is ThunderBolt!'})
+        // // TODO: remove when done with initial setup testing
+        // this.model.addSection('testValues', {mainLabel: 'Hello, World! This is ThunderBolt!'})
 
         // console.log('<<<setupUIElements<<<')
 
@@ -401,6 +407,14 @@ export class AppCore {
     // ----------------- File API access --------------------------
     // todo: Put into separate API space
 
+    fileExists(filePath) {
+        if(!check.mobile) {
+            return mainApi.fileExists(filePath)
+        } else {
+            return false
+        }
+    }
+
     readFileText(filePath) {
         if(!check.mobile) {
             return mainApi.readFileText(filePath)
@@ -449,3 +463,4 @@ function findPageComponent(pageId) {
     // console.log('found page', pageComp)
     return pageComp
 }
+

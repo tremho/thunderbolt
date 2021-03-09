@@ -1,5 +1,5 @@
 
-import {readFileText} from "./FileAPI"
+import {readFileText, fileExists} from "./FileAPI"
 import {addMenuItem, enableMenuItem, deleteMenuItem, changeMenuItem, clearMenu, resetMenu, setToMenuBar} from "./DesktopMenu";
 //
 // function addMenuItem(a, item, target) {
@@ -18,7 +18,8 @@ const exportedFunctions = {
     setToMenuBar,
     resetMenu,
 
-    readFileText
+    readFileText,
+    fileExists
 }
 
 /**

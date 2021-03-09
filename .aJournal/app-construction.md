@@ -53,7 +53,7 @@ file that simply looks like this:
 and then one that is only slightly different:
 ```xml
 <hello-world>
-    <simple-button text="Hello World" />
+    <simple-label text="Hello World" />
 </hello-world>
 ```
 and then, finally to get to some dynamic structuring:
@@ -73,11 +73,17 @@ export function appStart(app:any) {
     model.setAtPath('testValues.mainLabel', 'Hello, World!')
 }
 ```
+___All the above is working at this point on 2/26/21___
+_Note that current Appcore is creating a model with mainLabel and it shouldn't, 
+so we need to add that to app code in the example_
+
 _Note that the above needs to change a bit so we create the model before
 setting a value_
 
+---
 Then change it so that we declare the model in `core/app` code that
 runs on startup so we don't have to do it awkwardly in the first page.
+---
 
 ##### Bringing in the app bar
 Introduce the app bar and have hello world triggered by a menu action

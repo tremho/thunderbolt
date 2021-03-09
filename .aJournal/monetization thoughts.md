@@ -53,7 +53,7 @@ They want:
 - flexible target configuration options
 - End-to-end solution path
 - Launchpad to distribution into ready marketplaces.
-- Confidence that they are not pioneers in the wild: there are many others
+- Confidence that they are not lone pioneers in the wild: there are many others
 who are staking their fortunes on this platform too.
 - Solutions for situations within their project as they arise.
 - Opportunity to share their solutions with the larger community.

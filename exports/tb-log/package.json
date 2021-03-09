@@ -1,0 +1,6 @@
+{
+  "name": "tb-log",
+  "description": "access to Thunderbolt Log API",
+  "version": "1.0.0",
+  "main": "index.js"
+}
